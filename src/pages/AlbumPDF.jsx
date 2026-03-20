@@ -151,14 +151,14 @@ export default function AlbumPDF({ fotos, nombreEvento, onComplete }) {
         
         {/* PORTADA: Usamos ruta relativa directa a public */}
         <div className="pdf-a4-page">
-          <img src="/portada-pdf.jpg" className="pdf-bg-image" alt="Portada" crossOrigin="anonymous" />
+          <img src="/portada-pdf.jpg" className="pdf-bg-image" alt="Portada" />
         </div>
 
         {paginas.map((pagina, indexPagina) => (
           <div key={`pdf-page-${indexPagina}`} className="pdf-a4-page">
             
             {/* FONDO: Usamos ruta relativa directa a public */}
-            <img src="/fondo-pdf.jpg" className="pdf-bg-image" alt="Fondo" crossOrigin="anonymous" />
+            <img src="/fondo-pdf.jpg" className="pdf-bg-image" alt="Fondo" />
             
             <div className="pdf-content-area">
               
