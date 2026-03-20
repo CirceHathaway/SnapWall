@@ -7,7 +7,8 @@ import './Guest.css';
 // Componente reutilizable para el Footer
 const Footer = () => (
   <footer className="guest-footer">
-    <div className="footer-brand">
+    {/* CORRECCIÓN: Un solo className unificado */}
+    <div translate="no" className="notranslate footer-brand">
       <span className="guest-title-bold">Snap</span>
       <span className="guest-title-script">Wall</span>
     </div>
@@ -146,7 +147,7 @@ export default function Guest() {
     return (
       <div className="guest-container">
         <div className="guest-main-content">
-          <div className="guest-logo">
+          <div translate="no" className="notranslate guest-logo">
             <span className="guest-title-bold">Snap</span>
             <span className="guest-title-script">Wall</span>
           </div>
@@ -174,7 +175,7 @@ export default function Guest() {
       <div className="guest-main-content">
         
         {/* LOGO FUERA DE LA TARJETA CON TIPOGRAFÍA DIVIDIDA */}
-        <div className="guest-logo">
+        <div translate="no" className="notranslate guest-logo">
           <span className="guest-title-bold">Snap</span>
           <span className="guest-title-script">Wall</span>
         </div>

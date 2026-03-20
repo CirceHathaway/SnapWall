@@ -98,7 +98,6 @@ export default function Wall() {
     setHeroItem(siguientePaso.itemOriginal);
     setHeroPaso({ tipo: siguientePaso.tipo, url: siguientePaso.url });
 
-    // CAMBIO: 25s para fotos (antes 15s), 25s para mensajes (antes 20s)
     const duracion = siguientePaso.tipo === 'foto' ? 25000 : 25000;
 
     heroTimeoutRef.current = setTimeout(() => {
@@ -126,7 +125,6 @@ export default function Wall() {
         if (!currentHero) setIndiceActual(prev => (prev + 1) % fotos.length);
         return currentHero;
       });
-    // CAMBIO: 20s para el cambio de fotos del fondo (antes 10s)
     }, 20000); 
     return () => clearInterval(intervalo);
   }, [fotos.length]);
@@ -171,6 +169,12 @@ export default function Wall() {
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
                   transition={{ duration: 0.6 }}
+                  /* CAMBIO: Detectamos si es horizontal y le agregamos la clase de ajuste */
+                  onLoad={(e) => {
+                    if (e.target.naturalWidth > e.target.naturalHeight) {
+                      e.target.classList.add('foto-horizontal');
+                    }
+                  }}
                 />
               ) : (
                 <motion.div 
@@ -203,6 +207,12 @@ export default function Wall() {
               key={fotoActual.id} src={fotoActual.urlImagen} className="active-slide"
               initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }} transition={{ duration: 1 }}
+              /* CAMBIO: Detectamos si es horizontal y le agregamos la clase de ajuste */
+              onLoad={(e) => {
+                if (e.target.naturalWidth > e.target.naturalHeight) {
+                  e.target.classList.add('foto-horizontal-slide');
+                }
+              }}
             />
           ) : (
             <div style={{color: 'white', textAlign: 'center', zIndex: 10}}>
@@ -226,7 +236,7 @@ export default function Wall() {
               <div className="wall-qr-box">
                 <QRCode 
                   value={urlInvitado} 
-                  size={90} 
+                  size={140} 
                   fgColor="#2e003e" 
                 />
               </div>

@@ -76,7 +76,6 @@
   display: flex;
   align-items: center;
   width: max-content; 
-  /* CAMBIO: Se aumentó el tiempo de 100s a 200s para que el scroll sea más lento */
   animation: scroll-infinite 200s linear infinite;
 }
 
@@ -274,7 +273,7 @@
 
 .wall-qr-box {
   background: white;
-  padding: 10px;
+  padding: 8px;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -295,7 +294,7 @@
    ==================================================== */
 .wall-brand-container {
   position: absolute;
-  bottom: 20px;
+  bottom: 15px;
   right: 25px;
   display: flex;
   align-items: center;
@@ -309,7 +308,7 @@
   font-family: 'Playfair Display', serif;
   font-style: italic;
   font-weight: 800;
-  font-size: 2rem;
+  font-size: 3rem;
   letter-spacing: 1px;
   color: white;
 }
@@ -317,7 +316,21 @@
 .wall-logo-script {
   font-family: 'Great Vibes', cursive;
   font-weight: 400;
-  font-size: 2.8rem;
+  font-size: 4rem;
   margin-top: -4px;
   color: #ff0050; 
+}
+
+/* ====================================================
+   NUEVO: AJUSTES PARA FOTOS HORIZONTALES (CENTRADO)
+   ==================================================== */
+/* Solo centra horizontalmente en el Slideshow regular */
+.active-slide.foto-horizontal-slide {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
+/* Compensa el espacio del cartel superior en el Hero Mode para horizontales */
+.hero-image.foto-horizontal {
+  margin-top: 8vh; 
 }
