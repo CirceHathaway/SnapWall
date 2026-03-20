@@ -38,7 +38,7 @@ export default function AlbumPDF({ fotos, nombreEvento, onComplete }) {
                 resolve({ ...f, tipoLayout });
               };
               img.onerror = () => resolve({ ...f, tipoLayout: 'foto-horizontal' }); 
-              img.src = obtenerUrlSegura(f.urlImagen); // Usamos URL segura para medir
+              img.src = obtenerUrlSegura(f.urlImagen);
             });
           })
         );
@@ -149,16 +149,16 @@ export default function AlbumPDF({ fotos, nombreEvento, onComplete }) {
 
       <div className="pdf-generator-container" ref={pdfContainerRef}>
         
-        {/* PORTADA CON CACHE-BUSTING */}
+        {/* PORTADA: Usamos ruta relativa directa a public */}
         <div className="pdf-a4-page">
-          <img src={obtenerUrlSegura(`${window.location.origin}/portada-pdf.jpg`)} className="pdf-bg-image" alt="Portada" crossOrigin="anonymous" />
+          <img src="/portada-pdf.jpg" className="pdf-bg-image" alt="Portada" crossOrigin="anonymous" />
         </div>
 
         {paginas.map((pagina, indexPagina) => (
           <div key={`pdf-page-${indexPagina}`} className="pdf-a4-page">
             
-            {/* FONDO CON CACHE-BUSTING */}
-            <img src={obtenerUrlSegura(`${window.location.origin}/fondo-pdf.jpg`)} className="pdf-bg-image" alt="Fondo" crossOrigin="anonymous" />
+            {/* FONDO: Usamos ruta relativa directa a public */}
+            <img src="/fondo-pdf.jpg" className="pdf-bg-image" alt="Fondo" crossOrigin="anonymous" />
             
             <div className="pdf-content-area">
               
