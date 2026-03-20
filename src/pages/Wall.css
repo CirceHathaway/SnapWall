@@ -1,0 +1,323 @@
+/* src/pages/Wall.css */
+
+/* Importamos fuentes solo para el logo */
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@1,800&display=swap');
+
+.wall-container {
+  height: 100vh;
+  width: 100vw;
+  background: radial-gradient(circle at center, #5826a3, #2e1065, #0a021a);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* --- POLVO DE HADAS (FONDO) --- */
+.fairy-dust {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    radial-gradient(#ffca1a, rgba(252, 211, 77, 0.4) 3px, transparent 4px),
+    radial-gradient(#fdc202, rgba(252, 211, 77, 0.3) 2px, transparent 3px);
+  background-size: 450px 450px, 300px 300px;
+  background-position: 0 0, 40px 60px;
+  animation: dustShimmer 60s linear infinite;
+  opacity: 1; 
+  mix-blend-mode: screen; 
+  pointer-events: none; 
+  z-index: 0;
+}
+
+@keyframes dustShimmer {
+  from { background-position: 0 0, 40px 60px; }
+  to { background-position: 450px 1000px, 340px 1060px; }
+}
+
+/* --- ZONA DE FOTOS --- */
+.slideshow-area {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; 
+  position: relative;
+  height: calc(100vh - 80px); 
+  padding-top: 30px; 
+  box-sizing: border-box;
+  overflow: hidden;
+  z-index: 10; 
+}
+
+.active-slide {
+  max-width: 95%; 
+  max-height: calc(100vh - 140px); 
+  border-radius: 15px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  border: 8px solid white;
+  object-fit: contain;
+  z-index: 10;
+}
+
+/* --- FOOTER (TICKER) --- */
+.footer-ticker {
+  height: 80px;
+  background: rgba(0, 0, 0, 0.95);
+  border-top: 4px solid #ff0050;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  overflow: hidden; 
+}
+
+.ticker-track {
+  display: flex;
+  align-items: center;
+  width: max-content; 
+  /* CAMBIO: Se aumentó el tiempo de 100s a 200s para que el scroll sea más lento */
+  animation: scroll-infinite 200s linear infinite;
+}
+
+@keyframes scroll-infinite {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); } 
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  padding-right: 80px;
+  white-space: nowrap;
+}
+
+.ticker-item::before {
+  content: "★";
+  color: #ff0050;
+  margin-right: 15px;
+  font-size: 1.2rem;
+}
+
+.ticker-text {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.8rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.ticker-author {
+  font-size: 1rem;
+  color: #aaa;
+  margin-left: 10px;
+  font-style: italic;
+}
+
+/* --- HERO MODE (PANTALLA GIGANTE) --- */
+.hero-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  padding: 10px; 
+  box-sizing: border-box;
+}
+
+/* --- REDISEÑO: ETIQUETA (CARTEL ARRIBA) --- */
+.new-tag {
+  background: rgba(15, 5, 30, 0.8);
+  backdrop-filter: blur(10px);
+  border: 2px solid #ff0050;
+  color: white;
+  padding: 15px 40px;
+  border-radius: 50px;
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 40px; 
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: pulse-pink 2s infinite;
+  flex-shrink: 0;
+  box-shadow: 0 0 25px rgba(255,0,80,0.5);
+}
+
+.new-tag.tag-message {
+  border-color: #fdc202; 
+  box-shadow: 0 0 25px rgba(253, 194, 2, 0.5);
+  animation: pulse-gold 2s infinite;
+}
+
+@keyframes pulse-pink {
+  0% { transform: scale(1) translateY(-10px); box-shadow: 0 0 20px rgba(255,0,80,0.4); }
+  50% { transform: scale(1.05) translateY(-10px); box-shadow: 0 0 40px rgba(255,0,80,0.8); }
+  100% { transform: scale(1) translateY(-10px); box-shadow: 0 0 20px rgba(255,0,80,0.4); }
+}
+
+@keyframes pulse-gold {
+  0% { transform: scale(1) translateY(-10px); box-shadow: 0 0 20px rgba(253, 194, 2, 0.4); }
+  50% { transform: scale(1.05) translateY(-10px); box-shadow: 0 0 40px rgba(253, 194, 2, 0.8); }
+  100% { transform: scale(1) translateY(-10px); box-shadow: 0 0 20px rgba(253, 194, 2, 0.4); }
+}
+
+/* FOTO HERO */
+.hero-image {
+  max-height: 55vh;
+  border: 10px solid white;
+  border-radius: 12px;
+  box-shadow: 0 0 60px rgba(0,0,0,0.8);
+}
+
+/* --- REDISEÑO: NUEVO CARTEL DE TEXTO CON CÍRCULO (TIPO PDF) --- */
+.hero-text-card {
+  background: rgba(30, 15, 55, 0.85); 
+  border: 3px solid #ff0050; 
+  color: #ffffff; 
+  padding: 60px 50px 30px 50px; 
+  border-radius: 20px;
+  width: 95vw; 
+  max-width: 1200px;
+  max-height: 90vh; 
+  overflow: visible; 
+  text-align: center;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.hero-caption-card {
+  margin-top: 50px; 
+  max-width: 900px;
+  padding: 45px 40px 20px 40px;
+}
+
+.hero-card-circle {
+  position: absolute;
+  top: -35px; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 70px;
+  background-color: #1a0b2e; 
+  border: 3px solid #ff0050;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  color: #ff0050; 
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.hero-text-card.card-blue {
+  border-color: #fdc202;
+}
+.hero-text-card.card-blue .hero-card-circle {
+  border-color: #fdc202;
+  color: #fdc202;
+}
+.hero-text-card.card-blue .hero-author-line {
+  color: #fdc202;
+}
+
+.hero-big-text {
+  font-family: 'Segoe UI', serif;
+  line-height: 1.3;
+  margin: 0 0 20px 0;
+  font-weight: 700;
+  color: #ffffff; 
+  width: 100%;
+  word-wrap: break-word;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+.hero-big-text.texto-s { font-size: clamp(3rem, 6vw, 5rem); }
+.hero-big-text.texto-l { font-size: clamp(2.2rem, 4vw, 3.5rem); }
+.hero-big-text.texto-xl { font-size: clamp(1.6rem, 2.8vw, 2.3rem); line-height: 1.4; }
+
+.hero-author-line {
+  font-size: 1.6rem; 
+  color: #ff0050;
+  font-style: italic;
+  font-weight: 600;
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 2px solid rgba(255, 255, 255, 0.2); 
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* ====================================================
+   QR FLOTANTE (ESQUINA INFERIOR IZQUIERDA)
+   ==================================================== */
+.wall-qr-container {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(10, 2, 26, 0.75); 
+  padding: 15px 25px 15px 15px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  z-index: 90; 
+}
+
+.wall-qr-box {
+  background: white;
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wall-qr-text {
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+/* ====================================================
+   NUEVO: LOGO SNAPWALL (ESQUINA INFERIOR DERECHA)
+   ==================================================== */
+.wall-brand-container {
+  position: absolute;
+  bottom: 20px;
+  right: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  z-index: 90;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
+}
+
+.wall-logo-bold {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 2rem;
+  letter-spacing: 1px;
+  color: white;
+}
+
+.wall-logo-script {
+  font-family: 'Great Vibes', cursive;
+  font-weight: 400;
+  font-size: 2.8rem;
+  margin-top: -4px;
+  color: #ff0050; 
+}

@@ -1,0 +1,318 @@
+/* src/pages/Album.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Great+Vibes&family=Playfair+Display:ital,wght@1,800&display=swap');
+
+:root {
+  --gold-text-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+  --separator-color: #b91646; 
+}
+
+.album-container {
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background-color: #fbf3e4; 
+  overflow-x: hidden; 
+  position: relative;
+}
+
+/* FLORES WEB */
+.album-background-decorations { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; }
+.bg-decor { position: absolute; opacity: 0.85; }
+.top-left { top: -20px; left: -20px; width: 480px; }
+.bottom-right { bottom: -10px; right: -10px; width: 420px; }
+.bottom-left { bottom: -10px; left: -10px; width: 350px; z-index: 1; }
+
+/* HEADER WEB */
+.album-header { text-align: center; margin-bottom: 40px; padding-top: 20px; display: flex; flex-direction: column; align-items: center; width: 100%; position: relative; z-index: 10; }
+.album-title { margin-bottom: 5px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; color: #2c2c2c; filter: drop-shadow(0 2px 4px rgba(255,255,255,0.8)); width: 100%; }
+.title-bold { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 800; font-size: 3.5rem; letter-spacing: 1px; }
+.title-script { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: 4.8rem; margin-top: -10px; color: #b91646; }
+.album-subtitle { color: #4a4a4a; font-size: 1.3rem; font-family: 'Playfair Display', serif; font-style: italic; margin-top: 5px; margin-bottom: 30px; text-align: center; width: 100%; }
+
+/* SEPARADOR CSS WEB */
+.css-separator { display: flex; align-items: center; justify-content: center; width: 100vw; margin-left: calc(-47.7vw + 50%); margin-top: 10px; margin-bottom: 20px; gap: 15px; padding: 0 15px; box-sizing: border-box; }
+.separator-diamond { width: 12px; height: 12px; background-color: var(--separator-color); transform: rotate(45deg); flex-shrink: 0; }
+.separator-line-group { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; }
+.separator-line { height: 2px; width: 100%; background-color: var(--separator-color); border-radius: 2px; }
+.separator-center-star { display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.star-circle { width: 40px; height: 40px; border: 2px solid var(--separator-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+/* GRILLA WEB (3 COLUMNAS) */
+.masonry-grid { column-count: 3; column-gap: 30px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
+.masonry-item { break-inside: avoid; margin-bottom: 30px; border-radius: 4px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15); cursor: zoom-in; position: relative; opacity: 0; transform: translateY(40px); transition: opacity 0.6s ease-out, transform 0.6s ease-out, box-shadow 0.3s ease; }
+.masonry-item.visible { opacity: 1; transform: translateY(0); }
+.masonry-item:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
+
+/* FOTOS WEB */
+.album-photo-frame { background-color: #dfd8ca; border: 2px solid #1a1a1a; border-radius: 4px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+.album-photo-wrapper { padding: 15px 15px 10px 15px; }
+.masonry-item img.album-photo { width: 100%; height: auto; display: block; object-fit: contain; border: 2px solid #1a1a1a; border-radius: 2px; }
+.album-item-footer { border-top: 2px solid #1a1a1a; padding: 18px 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.album-item-message { font-size: 1.25rem; margin-bottom: 10px; line-height: 1.4; font-style: italic; font-family: 'Segoe UI', serif; }
+.album-item-author { font-size: 0.95rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+
+/* COLORES WEB */
+.album-label-green .album-item-footer { background-color: #a64c6d; }
+.album-label-green .album-item-message, .album-label-green .album-item-author { color: #ffffff; }
+.album-label-red .album-item-footer { background-color: #a64c6d; }
+.album-label-red .album-item-message, .album-label-red .album-item-author { color: #ffffff; }
+.album-label-yellow .album-item-footer { background-color: #a64c6d; }
+.album-label-yellow .album-item-message, .album-label-yellow .album-item-author { color: #1a1a1a; }
+
+.album-full-frame-green { background-color: #a64c6d; }
+.album-full-frame-red { background-color: #a64c6d; }
+.album-full-frame-yellow { background-color: #a64c6d; }
+.album-full-frame-green .album-photo-wrapper, .album-full-frame-red .album-photo-wrapper, .album-full-frame-yellow .album-photo-wrapper { padding: 15px; }
+
+/* TEXTO WEB */
+.album-custom-text-card { position: relative; border-radius: 4px; border: 2px solid #1a1a1a; box-shadow: 0 8px 25px rgba(0,0,0,0.15); min-height: 280px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px 20px; overflow: hidden; background-image: url('/fondoPapel.png'); background-size: cover; background-position: center; }
+.album-layer-papel { position: absolute; top: 5%; bottom: 5%; left: 5%; right: 5%; background-image: url('/papel.png'); background-size: cover; background-position: center; background-repeat: no-repeat; z-index: 1; }
+.album-layer-adorno { position: absolute; pointer-events: none; }
+.album-flor-sup-der { top: 0; right: 0; width: 90px; z-index: 2; }
+.album-flor-inf-der { bottom: 0; right: 0; width: 90px; z-index: 2; }
+.album-flor-inf-izq { bottom: 0; left: 0; width: 90px; z-index: 2; }
+.album-icon-carta { bottom: 10px; left: 10px; width: 45px; z-index: 3; }
+.album-text-content-overlay { position: relative; z-index: 10; width: 100%; padding: 0 10px; }
+.album-text-only-message { font-family: 'Caveat', cursive; font-size: 2.2rem; color: #2c1e16; line-height: 1.3; margin-bottom: 20px; text-align: center; text-shadow: 0 1px 2px rgba(255,255,255,0.5); }
+.album-text-only-author { font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #5a4a42; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+
+/* LIGHTBOX & MODALES WEB (Omitido en impresión) */
+.lightbox-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 5, 20, 0.96); z-index: 2000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(8px); animation: fadeIn 0.3s ease; }
+.lightbox-top-bar { position: absolute; top: 20px; right: 30px; display: flex; gap: 15px; z-index: 2010; }
+.icon-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+.icon-btn:hover { background: white; color: #333; transform: scale(1.1); border-color: white; }
+.close-variant:hover { background: #ff4757; color: white; border-color: #ff4757; }
+.nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: rgba(255,255,255,0.4); font-size: 3rem; cursor: pointer; padding: 20px; z-index: 2005; transition: all 0.2s; }
+.nav-btn:hover { color: white; scale: 1.2; }
+.prev-btn { left: 15px; }
+.next-btn { right: 15px; }
+.lightbox-content { max-width: 90vw; max-height: 95vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.lightbox-img { max-height: 85vh; max-width: 100%; border-radius: 4px; border: 3px solid #111; box-shadow: 0 0 80px rgba(0,0,0,0.8); object-fit: contain; }
+.lightbox-text-only { font-family: 'Caveat', cursive; font-size: clamp(1.8rem, 4vw, 3.5rem); color: white; width: 100%; max-width: 800px; max-height: 70vh; overflow-y: auto; text-align: center; padding: 0 20px; line-height: 1.4; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent; }
+.lightbox-details { margin-top: 15px; text-align: center; color: white; width: 100%; max-width: 700px; }
+.lightbox-message { font-size: 1.1rem; line-height: 1.5; margin-bottom: 5px; color: #eee; }
+.read-more-link { color: #fcd34d; font-size: 0.9rem; margin-left: 8px; cursor: pointer; font-weight: bold; }
+.read-more-link:hover { text-decoration: underline; }
+.lightbox-author { color: #888; font-size: 0.85rem; margin-top: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+.text-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; display: flex; justify-content: center; align-items: center; padding: 20px; }
+.text-modal-card { background: #fff; padding: 40px; border-radius: 4px; border: 2px solid #111; max-width: 600px; width: 100%; color: #333; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.6); text-align: center; background-image: url('/fondo.png'); background-size: cover; }
+.text-modal-content { font-family: 'Caveat', cursive; font-size: 1.8rem; line-height: 1.4; margin-bottom: 25px; max-height: 60vh; overflow-y: auto; color: #2c1e16; padding-right: 10px; }
+
+/* BOTONERA WEB */
+.album-action-buttons { display: flex; gap: 20px; margin-top: 30px; flex-wrap: wrap; justify-content: center; position: relative; z-index: 10; }
+.btn-export { padding: 12px 24px; font-size: 1rem; font-family: 'Segoe UI', sans-serif; font-weight: 600; border-radius: 30px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 8px; }
+.btn-export:disabled { opacity: 0.7; cursor: not-allowed; }
+.zip-btn { background-color: #2c2c2c; color: white; }
+.zip-btn:hover:not(:disabled) { background-color: #000; transform: translateY(-2px); }
+.pdf-btn { background-color: #c25780; color: white; }
+.pdf-btn:hover:not(:disabled) { background-color: #a64c6d; transform: translateY(-2px); }
+
+/* PANTALLA DE CARGA PDF */
+.print-loading-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(251, 243, 228, 0.95); backdrop-filter: blur(5px); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
+.print-loading-overlay h2 { font-family: 'Segoe UI', sans-serif; color: #1a1a1a; margin-top: 20px; font-size: 1.5rem; }
+.print-loading-overlay p { color: #555; margin-top: 10px; font-style: italic; }
+.loader { border: 6px solid #dfd8ca; border-top: 6px solid #b91646; border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* RESPONSIVE WEB */
+@media (max-width: 992px) { .masonry-grid { column-count: 2; } }
+@media (max-width: 600px) {
+  .masonry-grid { column-count: 1; }
+  .title-bold { font-size: 2.5rem; }
+  .title-script { font-size: 3.5rem; }
+  .album-subtitle { font-size: 1.1rem; }
+  .lightbox-img { max-height: 75vh; }
+  .top-left { width: 150px; top: 0; left: 0; }
+  .bottom-right { width: 180px; bottom: 0; right: 0; }
+  .bottom-left { width: 120px; bottom: 10px; left: 0; }
+}
+
+/* ====================================================
+   NUEVO MOTOR DE IMPRESIÓN (EL VERDADERO PDF PROFESIONAL)
+   ==================================================== */
+/* En pantalla normal, el motor de impresión está totalmente escondido */
+.print-engine-container {
+  display: none;
+}
+
+/* Al abrir el cuadro de imprimir, Chrome aplica esto: */
+@media print {
+  
+  /* Escondemos toda tu web normal para que no estorbe */
+  .no-print { display: none !important; }
+  .print-loading-overlay { display: none !important; }
+
+  /* Forzamos al navegador a imprimir fondos y colores a tamaño A4 exacto */
+  @page {
+    size: A4 portrait;
+    margin: 0; 
+  }
+  
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Mostramos el libro maestro */
+  .print-engine-container {
+    display: block;
+    width: 210mm; /* A4 */
+  }
+
+  .print-page {
+    width: 210mm;
+    height: 297mm;
+    position: relative;
+    page-break-after: always;
+    overflow: hidden;
+    background-color: white;
+  }
+
+  /* Las portadas y fondos son imágenes reales (infalibles) */
+  .print-background-image {
+    position: absolute;
+    top: 0; left: 0;
+    width: 210mm; height: 297mm;
+    object-fit: cover;
+    z-index: 1;
+  }
+
+  /* Contenedor central (Se aleja del borde de flores de Canva) */
+  .print-content-area {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    padding: 35mm 22mm; /* Aleja todo del borde de las flores */
+    box-sizing: border-box;
+  }
+
+  /* GRILLA DEL PDF (Tarjetas GIGANTES de casi 80mm de ancho) */
+  .print-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 15mm; 
+    width: 100%;
+    height: 100%;
+  }
+
+  .print-card-wrapper {
+    height: 100%;
+    width: 100%;
+  }
+
+  /* --- ESTILO FOTO + MENSAJE --- */
+  .print-card {
+    display: flex;
+    flex-direction: column;
+    border: 1.5mm solid #1a1a1a;
+    border-radius: 2mm;
+    background-color: #dfd8ca;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .print-photo-box {
+    flex-grow: 1;
+    padding: 5mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .print-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Corta perfecto para mantener el aspecto */
+    border: 1mm solid #1a1a1a;
+    border-radius: 1mm;
+  }
+
+  .print-footer-box {
+    border-top: 1.5mm solid #1a1a1a;
+    padding: 8mm 6mm;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .print-msg {
+    font-size: 16pt; /* LETRAS GIGANTES Y NÍTIDAS EN PDF */
+    font-family: 'Segoe UI', serif;
+    font-style: italic;
+    line-height: 1.3;
+    margin-bottom: 4mm;
+  }
+
+  .print-auth {
+    font-size: 11pt;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* COLORES DE PDF */
+  .print-label-green .print-footer-box { background-color: #175e4c; color: white; }
+  .print-label-red .print-footer-box { background-color: #a61d37; color: white; }
+  .print-label-yellow .print-footer-box { background-color: #fbc02d; color: #1a1a1a; }
+  
+  .print-full-frame-green { background-color: #175e4c; }
+  .print-full-frame-red { background-color: #a61d37; }
+  .print-full-frame-yellow { background-color: #fbc02d; }
+  .print-full-frame-green .print-photo-box, .print-full-frame-red .print-photo-box, .print-full-frame-yellow .print-photo-box { padding: 8mm; }
+
+  /* --- ESTILO SOLO MENSAJE (TEXTO INMENSO) --- */
+  .print-text-card {
+    position: relative;
+    border: 1.5mm solid #1a1a1a;
+    border-radius: 2mm;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10mm;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  /* Usamos img absolutas en vez de background-image para asegurar impresión 100% en Safari/Edge */
+  .print-abs-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+  .print-papel-inner { position: absolute; top: 5%; left: 5%; width: 90%; height: 90%; z-index: 2; }
+  
+  .print-flor { position: absolute; width: 25mm; z-index: 3; }
+  .print-f-sup-der { top: 0; right: 0; }
+  .print-f-inf-der { bottom: 0; right: 0; }
+  .print-f-inf-izq { bottom: 0; left: 0; }
+  .print-icon-carta { position: absolute; bottom: 5mm; left: 5mm; width: 12mm; z-index: 4; }
+
+  .print-text-content {
+    position: relative;
+    z-index: 10;
+    padding: 0 5mm;
+  }
+
+  .print-txt-msg {
+    font-family: 'Caveat', cursive;
+    font-size: 32pt; /* TEXTO EXTREMADAMENTE GRANDE */
+    color: #2c1e16;
+    line-height: 1.2;
+    margin-bottom: 8mm;
+  }
+
+  .print-txt-auth {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 14pt;
+    font-weight: bold;
+    color: #5a4a42;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+}

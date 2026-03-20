@@ -1,0 +1,634 @@
+.admin-container {
+  min-height: 100vh;
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.admin-content {
+  width: 100%;
+  max-width: 1600px; 
+  margin: 0 auto;
+}
+
+/* --- CABECERA --- */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #333;
+}
+
+.admin-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+}
+
+/* BOTÓN VOLVER (ARREGLADO) */
+.btn-back {
+  background: transparent;
+  border: 1px solid #555;
+  color: #ccc;
+  padding: 8px 16px; /* Padding pequeño */
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  width: auto; /* Ancho automático según texto */
+  transition: 0.2s;
+}
+.btn-back:hover {
+  border-color: white;
+  color: white;
+  background: #333;
+}
+
+/* --- GRID HOME --- */
+.home-grid {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .home-grid { grid-template-columns: 1fr; }
+}
+
+/* --- TARJETAS --- */
+.admin-card {
+  background-color: #1e1e1e;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border: 1px solid #333;
+}
+
+.create-section { position: sticky; top: 30px; }
+.admin-form { display: flex; flex-direction: column; gap: 15px; }
+
+.admin-input {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background-color: #2c2c2c;
+  color: white;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+}
+.admin-input:focus { border-color: #3b82f6; }
+
+/* Lista de Eventos */
+.event-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.event-card-item {
+  background-color: #252525;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 15px;
+  transition: transform 0.2s;
+}
+.event-card-item:hover { transform: translateY(-3px); background-color: #2a2a2a; }
+
+/* Botones Generales */
+.btn-primary {
+  padding: 12px;
+  background: linear-gradient(45deg, #3b82f6, #2563eb);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  width: 100%;
+}
+
+.btn-actions { display: flex; gap: 10px; }
+
+.btn-outline {
+  width: 100%; /* Este es para el álbum en la lista */
+  padding: 8px;
+  background: transparent;
+  color: #ccc;
+  border: 1px solid #555;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-outline:hover { border-color: white; color: white; }
+
+.btn-manage {
+  flex: 2;
+  padding: 8px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* --- VISTA GESTIÓN (DASHBOARD) --- */
+
+.dashboard-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  align-items: center;
+}
+
+.qr-wrapper {
+  background: white;
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content; 
+}
+
+.info-wrapper {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.info-wrapper h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  color: white;
+}
+
+/* --- LINKS DE EVENTO --- */
+.links-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Espacio muy pequeño entre los dos links */
+  margin-bottom: 25px; /* Espacio antes de los botones grandes */
+}
+
+.link-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+}
+
+.link-label {
+  color: #888;
+  min-width: 130px; /* Alinea los dos puntos ":" verticalmente */
+}
+
+.link-blue { color: #3b82f6; text-decoration: none; }
+.link-blue:hover { text-decoration: underline; }
+
+.link-green { color: #10b981; font-weight: 600; text-decoration: none; }
+.link-green:hover { text-decoration: underline; }
+
+/* BOTONES DE ACCIÓN (JUNTOS Y CENTRADOS) */
+.action-buttons-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Separación pequeña (juntos) */
+  justify-content: flex-start; /* Alineados a la izquierda (como el texto) */
+  /* Si los quieres centrados al medio de la caja usa: justify-content: center; */
+}
+
+.big-btn {
+  width: 140px; /* Ancho fijo para que se vean iguales */
+  height: 45px;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.1s;
+}
+
+.big-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+.btn-purple { background: #7c3aed; }
+.btn-yellow { background: #f59e0b; color: black; }
+.btn-blue { background: #0ea5e9; }
+.btn-red { background: #ef4444; }
+.btn-green { background: #10b981; width: auto; padding: 0 20px;} /* Auto ancho para que entre el texto largo */
+
+
+/* --- NUEVA GALERÍA (ESTILO TARJETA MODERNA) --- */
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); /* Tarjetas más anchas */
+  gap: 25px;
+  padding-bottom: 50px;
+}
+
+/* LA TARJETA EN SÍ */
+.gallery-card {
+  background-color: #1e1e1e; /* Gris oscuro, no negro */
+  border-radius: 16px;
+  overflow: hidden; /* Para que la imagen respete los bordes */
+  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.gallery-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  border-color: #555;
+}
+
+/* 1. SECCIÓN IMAGEN */
+.card-image-container {
+  width: 100%;
+  height: 200px; /* Altura fija para que la grilla sea uniforme */
+  background-color: #000;
+  position: relative;
+}
+
+.card-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Recorta la imagen para llenar el espacio sin deformar */
+}
+
+/* 2. SECCIÓN TEXTO */
+.card-message-body {
+  padding: 15px 20px;
+  flex-grow: 1; /* Ocupa el espacio disponible */
+}
+
+.card-message-body p {
+  margin: 0;
+  color: #e0e0e0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-style: italic;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  word-wrap: break-word;
+}
+
+/* Estilo especial si NO hay foto (Solo texto) */
+.text-only-card {
+  background: linear-gradient(135deg, #2a2a2a, #1e1e1e);
+  min-height: 150px;
+}
+
+.text-only-card .card-message-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.text-only-card .card-message-body p {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: white;
+  font-style: normal;
+}
+
+/* 3. SECCIÓN FOOTER (Autor y Botón) */
+.card-footer {
+  padding: 12px 15px;
+  background-color: #181818; /* Un poco más oscuro que la tarjeta */
+  border-top: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Autor */
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar-circle {
+  width: 28px;
+  height: 28px;
+  background-color: #3b82f6; /* Azul bonito */
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.author-name {
+  font-size: 0.85rem;
+  color: #bbb;
+  font-weight: 600;
+}
+
+/* Botón Borrar (Icono Discreto) */
+.icon-delete-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-delete-btn:hover {
+  background-color: rgba(239, 68, 68, 0.2); /* Rojo suave al pasar mouse */
+  transform: scale(1.1);
+}
+
+/* Botón flotante sobre la imagen (Borrar Foto) */
+.mini-delete-img {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0; /* Invisible por defecto */
+  transition: opacity 0.2s, background 0.2s;
+}
+
+.mini-delete-img:hover {
+  background: red;
+  border-color: red;
+}
+
+/* Mostrar el botón cuando paso el mouse por la imagen */
+.card-image-container:hover .mini-delete-img {
+  opacity: 1;
+}
+
+/* Botón al lado del texto (Borrar Texto) */
+.mini-delete-text {
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 0 0 10px;
+  line-height: 1;
+  opacity: 0.5;
+  transition: color 0.2s;
+}
+
+.mini-delete-text:hover {
+  color: #ef4444; /* Rojo al pasar el mouse */
+  opacity: 1;
+}
+
+/* Para que el botón de borrar texto no rompa el diseño del texto */
+.card-message-body > div {
+  width: 100%;
+}
+
+/* =========================================
+   ESTILOS DE MODALES (CREAR EVENTO Y DATOS)
+   ========================================= */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #1e1e1e;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 16px;
+    padding: 30px;
+    border: 1px solid #333;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    max-height: 90vh;
+    overflow-y: auto; /* Por si la pantalla es muy chica */
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
+}
+
+.btn-close-modal {
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.btn-close-modal:hover {
+    color: #ef4444;
+}
+
+/* Formularios dentro del modal */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    color: #aaa;
+    font-weight: 600;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+textarea.admin-input {
+    resize: vertical;
+    font-family: inherit;
+}
+
+/* Vista de Datos (+ Datos) */
+.data-view-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.data-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.data-label {
+    color: #888;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.data-value {
+    color: white;
+    font-size: 1rem;
+    text-align: right;
+}
+
+.comment-box {
+    background: #2a2a2a;
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    font-style: italic;
+    color: #ccc;
+}
+
+/* BOTÓN ELIMINAR EVENTO (Tacho de basura en la tarjeta) */
+.btn-delete-event {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  opacity: 0.5; /* Medio transparente por defecto para no molestar */
+  transition: all 0.2s ease;
+  padding: 5px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-delete-event:hover {
+  opacity: 1;
+  transform: scale(1.1); /* Efecto de crecimiento al pasar el mouse */
+  background: rgba(239, 68, 68, 0.2); /* Fondo rojizo sutil para advertencia */
+}
+
+/* --- TÍTULOS DE SECCIÓN --- */
+.section-title {
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+.text-yellow { color: #f59e0b; }
+
+/* --- ALERTA NUEVO CONTENIDO (FLOTANTE) --- */
+.alert-new-content {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f59e0b;
+    color: #000;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+    z-index: 5000;
+    animation: slideDownFade 0.5s ease-out;
+}
+
+@keyframes slideDownFade {
+    from { top: -50px; opacity: 0; }
+    to { top: 20px; opacity: 1; }
+}
+
+/* --- TARJETAS PENDIENTES (MODERACIÓN) --- */
+.moderation-section {
+    background: rgba(245, 158, 11, 0.05); /* Fondo amarillento muy suave */
+    border: 1px dashed rgba(245, 158, 11, 0.3);
+    padding: 20px;
+    border-radius: 16px;
+    margin-top: 30px;
+}
+
+.pending-card {
+    border-color: #f59e0b; /* Borde amarillo para destacarla */
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.1);
+}
+
+.moderation-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.moderation-buttons {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.btn-mod-approve, .btn-mod-reject {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.btn-mod-approve {
+    background: #10b981;
+    color: white;
+}
+.btn-mod-approve:hover { filter: brightness(1.1); }
+
+.btn-mod-reject {
+    background: #3f3f46;
+    color: #ef4444;
+}
+.btn-mod-reject:hover { background: #ef4444; color: white; }

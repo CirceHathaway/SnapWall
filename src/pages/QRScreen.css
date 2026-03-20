@@ -1,0 +1,173 @@
+/* src/pages/QRScreen.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@1,800&display=swap');
+
+.qr-screen-container {
+  height: 100vh;
+  width: 100vw;
+  background: radial-gradient(circle at center, #5826a3, #2e1065, #0a021a);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Segoe UI', serif;
+  padding-top: 30px; 
+  box-sizing: border-box;
+}
+
+.event-header {
+  z-index: 20;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 0px; 
+}
+
+.event-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  width: 100%;
+  margin-bottom: 0;
+  line-height: 1;
+  position: relative;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); 
+}
+
+/* Clases únicas para la pantalla QR */
+.qr-title-bold {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 4rem;
+  letter-spacing: 1px;
+  color: #ffffff;
+}
+
+.qr-title-script {
+  font-family: 'Great Vibes', cursive;
+  font-weight: 400;
+  font-size: 5.5rem;
+  margin-top: -10px;
+  color: #fdc202;
+}
+
+.split-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  max-width: 1400px;
+  height: auto;
+  margin-top: 50px; 
+  gap: 80px; 
+  z-index: 10;
+}
+
+.left-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.qr-frame-static {
+  position: relative;
+}
+
+.qr-white-box {
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 60px rgba(138, 43, 226, 0.3); 
+  position: relative;
+  z-index: 2;
+}
+
+.qr-gold-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 105%; height: 105%;
+  border-radius: 30px;
+  background: rgba(255, 215, 0, 0.3);
+  filter: blur(40px);
+  z-index: 1;
+}
+
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left; 
+}
+
+.instruction-text {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.1;
+  text-shadow: 0 2px 15px rgba(0,0,0,0.8);
+  max-width: 700px;
+}
+
+.decoration-line {
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(90deg, #ffeb3b, #ff9800, transparent);
+  margin-top: 25px;
+  border-radius: 2px;
+  box-shadow: 0 0 15px #ffeb3b;
+}
+
+.fairy-dust {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    radial-gradient(#ffca1a, rgba(252, 211, 77, 0.4) 3px, transparent 4px),
+    radial-gradient(#fdc202, rgba(252, 211, 77, 0.3) 2px, transparent 3px);
+  background-size: 450px 450px, 300px 300px;
+  background-position: 0 0, 40px 60px;
+  animation: dustShimmer 60s linear infinite;
+  opacity: 1; 
+  mix-blend-mode: screen; 
+}
+
+@keyframes dustShimmer {
+  from { background-position: 0 0, 40px 60px; }
+  to { background-position: 450px 1000px, 340px 1060px; }
+}
+
+@media (max-width: 1000px) {
+  .qr-screen-container {
+    padding-top: 40px;
+    justify-content: flex-start;
+  }
+  .split-layout {
+    flex-direction: column;
+    margin-top: 30px;
+    gap: 40px;
+  }
+  .right-panel {
+    align-items: center;
+    text-align: center;
+  }
+  .instruction-text {
+    font-size: 2rem;
+  }
+  .qr-title-bold {
+    font-size: 2.8rem;
+  }
+  .qr-title-script {
+    font-size: 3.8rem;
+  }
+  .decoration-line {
+    background: linear-gradient(90deg, transparent, #ffeb3b, transparent);
+  }
+}

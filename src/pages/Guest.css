@@ -1,0 +1,331 @@
+/* src/pages/Guest.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@1,800&display=swap');
+
+.guest-container {
+  min-height: 100vh;
+  background: #121212; 
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Modificador para centrar el spinner en la pantalla de carga */
+.guest-container.loading-container {
+  align-items: center;
+  justify-content: center;
+}
+
+/* Bloque principal que empuja el footer hacia abajo */
+.guest-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* --- CLASES DE TIPOGRAFÍA DIVIDIDA (SNAPWALL) --- */
+.guest-title-bold {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 800;
+  color: white;
+  letter-spacing: 1px;
+}
+
+.guest-title-script {
+  font-family: 'Great Vibes', cursive;
+  font-weight: 400;
+  color: #ff0050; /* Rosa característico */
+}
+
+/* --- LOGO SUPERIOR SNAPWALL --- */
+.guest-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 25px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+}
+
+.guest-logo .guest-title-bold {
+  font-size: 3.5rem;
+}
+
+.guest-logo .guest-title-script {
+  font-size: 4.8rem;
+  margin-top: -10px;
+}
+
+.guest-card {
+  width: 100%;
+  max-width: 500px;
+  background: #1e1e1e; 
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  border: 1px solid #333;
+  box-sizing: border-box;
+}
+
+.guest-title {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 1.5rem;
+}
+
+.guest-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* --- ZONA DE CARGA DE FOTOS --- */
+.guest-upload-box {
+  border: 2px dashed #555;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #252525;
+  color: #ccc;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.guest-upload-box:hover {
+  border-color: #777;
+  background: #2a2a2a;
+}
+
+.guest-file-input {
+  display: none;
+}
+
+.guest-upload-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.guest-upload-text {
+  margin: 0;
+  font-weight: 500;
+}
+
+/* --- TEXTAREA Y CONTADOR --- */
+.guest-textarea-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.guest-textarea {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background: #2c2c2c;
+  color: white;
+  min-height: 100px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  outline: none;
+  resize: vertical; 
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.guest-textarea:focus,
+.guest-input:focus {
+  border-color: #ff0050; 
+}
+
+.guest-char-counter {
+  text-align: right;
+  color: #888;
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+/* --- INPUT NOMBRE --- */
+.guest-name-container {
+  animation: fadeInDown 0.4s ease-out;
+}
+
+.guest-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #aaa;
+  font-size: 0.9rem;
+  margin-left: 5px;
+}
+
+.guest-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background: #2c2c2c;
+  color: white;
+  font-size: 1rem;
+  box-sizing: border-box;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+/* --- BOTÓN DE ENVIAR Y SPINNER --- */
+.guest-submit-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(45deg, #ff0050, #ff4081);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+/* Estado Deshabilitado (vacío) */
+.guest-submit-btn:disabled:not(.btn-uploading) {
+  background: #444;
+  color: #888;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Estado Subiendo */
+.guest-submit-btn.btn-uploading {
+  background: #333;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.guest-submit-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgb(255, 196, 0);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+/* --- FOOTER SNAPWALL --- */
+.guest-footer {
+  background: #0a0a0a;
+  padding: 25px 30px;
+  border-top: 1px solid #222;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto; 
+}
+
+/* Contenedor del Título del Footer */
+.footer-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+
+.footer-brand .guest-title-bold {
+  font-size: 1.8rem;
+}
+
+.footer-brand .guest-title-script {
+  font-size: 2.4rem;
+  margin-top: -5px;
+}
+
+/* Contenedor para créditos (izq) y redes (der) */
+.footer-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-credits {
+  font-size: 0.95rem;
+  color: #888888;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.footer-social-link {
+  color: #888888;
+  transition: color 0.3s ease, transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-social-link:hover {
+  color: #ff0050;
+  transform: translateY(-3px);
+}
+
+/* --- ANIMACIONES GENERALES --- */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeInDown {
+  from { 
+    opacity: 0; 
+    transform: translateY(-15px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+::placeholder {
+  color: #888;
+}
+
+/* --- RESPONSIVE PARA EL LOGO Y FOOTER --- */
+@media (max-width: 600px) {
+  .footer-bottom-row {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  .guest-logo .guest-title-bold {
+    font-size: 2.8rem;
+  }
+  .guest-logo .guest-title-script {
+    font-size: 3.8rem;
+    margin-top: -8px;
+  }
+}

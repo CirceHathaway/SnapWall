@@ -1,0 +1,173 @@
+/* src/pages/AlbumPDF.css */
+
+.pdf-export-wrapper {
+  position: absolute;
+  top: 0; left: 0; width: 100%; z-index: 9999;
+}
+
+/* --- PANTALLA DE CARGA --- */
+.pdf-loading-overlay {
+  position: fixed; 
+  top: 0; left: 0; 
+  width: 100vw; height: 100vh;
+  background-color: rgba(251, 243, 228, 0.98);
+  backdrop-filter: blur(8px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; 
+  z-index: 100; 
+}
+.pdf-loading-card {
+  background: white; padding: 50px; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  text-align: center; border: 2px solid #1a1a1a; max-width: 90%;
+}
+.pdf-loading-card h2 { font-family: 'Segoe UI', sans-serif; color: #1a1a1a; margin-bottom: 10px; font-size: 1.5rem; }
+.pdf-loading-card p { color: #666; font-style: italic; font-size: 1rem; }
+.loader {
+  border: 6px solid #dfd8ca; border-top: 6px solid #b91646; border-radius: 50%;
+  width: 60px; height: 60px; animation: spin 1s linear infinite; margin: 0 auto 25px auto;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* --- CONTENEDOR DEL PDF --- */
+.pdf-generator-container {
+  position: relative; width: 794px; background-color: #ffffff; z-index: 1; 
+}
+.pdf-a4-page {
+  width: 794px; height: 1123px; position: relative; overflow: hidden; page-break-after: always; background-color: #ffffff;
+}
+.pdf-bg-image {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;
+}
+
+/* ÁREA DE CONTENIDO (Márgenes generales) */
+.pdf-content-area {
+  position: relative; z-index: 2; width: 100%; height: 100%;
+  padding: 90px 60px; 
+  box-sizing: border-box;
+}
+
+/* ====================================================
+   1. LAYOUT: DOS FOTOS (Verticales u Horizontales)
+   ==================================================== */
+.pdf-layout-doble {
+  display: flex; flex-direction: column; 
+  /* TRUCO: Lo hacemos más alto que la página invadiendo los márgenes 
+     para que las fotos verticales puedan crecer libremente */
+  height: calc(100% + 120px);
+  margin-top: -60px;
+  margin-bottom: -60px;
+  gap: 20px; 
+  justify-content: center; align-items: center;
+}
+
+.pdf-photo-box {
+  flex: 1; width: 100%;
+  display: flex; justify-content: center; align-items: center; overflow: hidden;
+}
+
+/* MARCO MÁS FINO y tamaño libre */
+.pdf-photo-box img {
+  max-width: 100%; max-height: 100%; object-fit: contain; 
+  border: 2px solid #1a1a1a; 
+  border-radius: 4px; background-color: transparent; 
+}
+
+/* ====================================================
+   2. LAYOUT: UNA FOTO + CARTEL MENSAJE (MEJORADO)
+   ==================================================== */
+.pdf-layout-unica {
+  display: flex; 
+  flex-direction: column; 
+  height: 100%;
+  /* Esto centra el bloque entero (Foto + Cartel) exactamente en el medio de la página */
+  justify-content: center; 
+  align-items: center;
+}
+
+.pdf-photo-box-grande {
+  /* Le quitamos el forzado del 50% para que crezca y sea gigante */
+  flex: 0 1 auto; 
+  max-height: 88%; /* Le damos un techo amplio pero dejando espacio al cartel */
+  width: 100%;
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.pdf-photo-box-grande img {
+  max-width: 100%; 
+  max-height: 100%; 
+  object-fit: contain; 
+  border: 2px solid #1a1a1a; 
+  border-radius: 4px;
+}
+
+/* Ajuste específico del cartel cuando está con una foto */
+.pdf-layout-unica .pdf-cartel-mensaje {
+  margin-top: 35px; /* Espacio justo para que el círculo superior no toque la foto */
+  margin-bottom: 0; /* Anula el empuje anterior para permitir el centrado total */
+  flex-shrink: 0; /* Garantiza que el cartel no se achique aunque el texto sea largo */
+}
+
+/* ====================================================
+   3. LAYOUT: SOLO TEXTOS (Hasta 3 por hoja)
+   ==================================================== */
+.pdf-layout-textos {
+  display: flex; flex-direction: column; height: 100%;
+  gap: 45px; 
+  justify-content: center;
+  align-items: center;
+}
+
+.pdf-layout-textos .pdf-cartel-mensaje {
+  width: 90%; 
+}
+
+/* ====================================================
+   DISEÑO DEL CARTEL CON CÍRCULO (Para todos)
+   ==================================================== */
+.pdf-cartel-mensaje {
+  position: relative;
+  width: 100%; 
+  background-color: rgba(255, 255, 255, 0.95); 
+  border: 2px solid #b91646; 
+  border-radius: 8px;
+  padding: 35px 30px 20px 30px; 
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  flex-shrink: 0;
+}
+
+.pdf-cartel-circulo {
+  position: absolute;
+  top: -25px; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  background-color: #fbf3e4; 
+  border: 2px solid #b91646;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.pdf-cartel-texto {
+  font-family: 'Caveat', cursive;
+  font-size: 2.2rem; 
+  color: #2c1e16;
+  line-height: 1.3;
+  margin-bottom: 15px;
+}
+
+.pdf-cartel-autor {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.1rem;
+  color: #b91646;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
