@@ -26,6 +26,17 @@ export default function Admin() {
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
   const [selectedEventData, setSelectedEventData] = useState(null);
 
+  // NUEVO: Estados para el modo de edición en el modal de datos
+  const [isEditingData, setIsEditingData] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    nombre: '',
+    nombreApellido: '',
+    correo: '',
+    fechaEvento: '',
+    tematica: '',
+    comentario: ''
+  });
+
   useEffect(() => {
     const q = query(collection(db, "eventos"), orderBy("fechaCreacion", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -101,6 +112,58 @@ export default function Admin() {
       await updateDoc(docRef, { activo: false }); 
       setIsFinishModalOpen(false);
     } catch (error) { console.error(error); }
+  };
+
+  // NUEVA FUNCIÓN: Para guardar los cambios editados del cliente
+  const guardarCambiosCliente = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const docRef = doc(db, "eventos", selectedEventData.id);
+      await updateDoc(docRef, {
+        nombre: editFormData.nombre,
+        datosCliente: {
+          nombreApellido: editFormData.nombreApellido,
+          correo: editFormData.correo,
+          fechaEvento: editFormData.fechaEvento,
+          tematica: editFormData.tematica,
+          comentario: editFormData.comentario || "Sin comentarios"
+        }
+      });
+      // Actualizamos el estado local para que el modal refleje los cambios al instante
+      setSelectedEventData(prev => ({
+        ...prev,
+        nombre: editFormData.nombre,
+        datosCliente: {
+          nombreApellido: editFormData.nombreApellido,
+          correo: editFormData.correo,
+          fechaEvento: editFormData.fechaEvento,
+          tematica: editFormData.tematica,
+          comentario: editFormData.comentario || "Sin comentarios"
+        }
+      }));
+      setIsEditingData(false);
+      alert("¡Datos actualizados con éxito!");
+    } catch (error) {
+      console.error("Error al actualizar datos:", error);
+      alert("Hubo un error al actualizar los datos.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const abrirModalDatos = (evento) => {
+    setSelectedEventData(evento);
+    setEditFormData({
+      nombre: evento.nombre,
+      nombreApellido: evento.datosCliente?.nombreApellido || '',
+      correo: evento.datosCliente?.correo || '',
+      fechaEvento: evento.datosCliente?.fechaEvento || '',
+      tematica: evento.datosCliente?.tematica || '',
+      comentario: evento.datosCliente?.comentario || ''
+    });
+    setIsEditingData(false);
+    setIsDataModalOpen(true);
   };
   
   const aprobarContenido = async (id) => {
@@ -191,7 +254,8 @@ export default function Admin() {
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
                         <div className="btn-actions">
-                            <button onClick={() => { setSelectedEventData(evento); setIsDataModalOpen(true); }} className="btn-outline" style={{flex: 1, borderColor: '#3b82f6', color: '#3b82f6'}}>📋 + Datos</button>
+                            {/* REEMPLAZO: Llama a abrirModalDatos en vez de setear estados crudos */}
+                            <button onClick={() => abrirModalDatos(evento)} className="btn-outline" style={{flex: 1, borderColor: '#3b82f6', color: '#3b82f6'}}>📋 + Datos</button>
                             <Link to={`/album/${evento.id}`} target="_blank" style={{flex: 1}}>
                                 <button className="btn-outline" style={{width: '100%'}}>📂 Álbum</button>
                             </Link>
@@ -256,7 +320,6 @@ export default function Admin() {
                             👀 Pendientes de Aprobación ({fotosPendientes.length})
                         </h3>
                         
-                        {/* CAMBIO AQUÍ: flex: 'none' anula el estiramiento y ajusta el botón a la derecha */}
                         {fotosPendientes.length > 1 && (
                             <button onClick={aprobarTodo} className="btn-mod-approve" style={{ flex: 'none', width: 'auto', padding: '8px 15px', fontSize: '0.9rem' }}>
                                 ✅ Aprobar Todo
@@ -396,48 +459,93 @@ export default function Admin() {
         </div>
       )}
 
-      {/* MODAL VER DATOS */}
+      {/* MODAL VER / EDITAR DATOS */}
       {isDataModalOpen && selectedEventData && (
         <div className="modal-overlay" onClick={() => setIsDataModalOpen(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-                <h2 style={{margin: 0}}>Datos del Cliente</h2>
-                <button className="btn-close-modal" onClick={() => setIsDataModalOpen(false)}>✕</button>
-            </div>
-            <div className="data-view-container">
-                <div className="data-item">
-                    <span className="data-label">Evento:</span>
-                    <span className="data-value">{selectedEventData.nombre}</span>
+                <h2 style={{margin: 0}}>{isEditingData ? 'Editar Datos' : 'Datos del Cliente'}</h2>
+                <div style={{display: 'flex', gap: '10px'}}>
+                  {!isEditingData && (
+                    <button className="btn-outline" style={{padding: '5px 10px', fontSize: '0.8rem', color: '#f59e0b', borderColor: '#f59e0b'}} onClick={() => setIsEditingData(true)}>✏️ Editar</button>
+                  )}
+                  <button className="btn-close-modal" onClick={() => setIsDataModalOpen(false)}>✕</button>
                 </div>
-                {selectedEventData.datosCliente ? (
-                    <>
-                        <div className="data-item">
-                            <span className="data-label">Cliente:</span>
-                            <span className="data-value">{selectedEventData.datosCliente.nombreApellido}</span>
-                        </div>
-                        <div className="data-item">
-                            <span className="data-label">Correo:</span>
-                            <span className="data-value">{selectedEventData.datosCliente.correo}</span>
-                        </div>
-                        <div className="data-item">
-                            <span className="data-label">Fecha:</span>
-                            <span className="data-value">{selectedEventData.datosCliente.fechaEvento}</span>
-                        </div>
-                        <div className="data-item">
-                            <span className="data-label">Temática:</span>
-                            <span className="data-value">{selectedEventData.datosCliente.tematica}</span>
-                        </div>
-                        <div className="data-item" style={{flexDirection: 'column', alignItems: 'flex-start'}}>
-                            <span className="data-label" style={{marginBottom: '5px'}}>Comentarios:</span>
-                            <div className="data-value comment-box">{selectedEventData.datosCliente.comentario}</div>
-                        </div>
-                    </>
-                ) : (
-                    <div style={{padding: '20px', textAlign: 'center', color: '#888'}}>
-                        Este evento no posee datos extendidos del cliente.
-                    </div>
-                )}
             </div>
+
+            {isEditingData ? (
+              /* MODO EDICIÓN */
+              <form onSubmit={guardarCambiosCliente} className="admin-form">
+                  <div className="form-group">
+                      <label>Nombre del Evento (Público) *</label>
+                      <input type="text" value={editFormData.nombre} onChange={(e) => setEditFormData({...editFormData, nombre: e.target.value})} className="admin-input" required />
+                  </div>
+                  <div className="form-group">
+                      <label>Nombre y Apellido del Cliente *</label>
+                      <input type="text" value={editFormData.nombreApellido} onChange={(e) => setEditFormData({...editFormData, nombreApellido: e.target.value})} className="admin-input" required />
+                  </div>
+                  <div className="form-group">
+                      <label>Correo Electrónico *</label>
+                      <input type="email" value={editFormData.correo} onChange={(e) => setEditFormData({...editFormData, correo: e.target.value})} className="admin-input" required />
+                  </div>
+                  <div className="form-row">
+                      <div className="form-group" style={{flex: 1}}>
+                          <label>Fecha del Evento *</label>
+                          <input type="date" value={editFormData.fechaEvento} onChange={(e) => setEditFormData({...editFormData, fechaEvento: e.target.value})} className="admin-input" required />
+                      </div>
+                      <div className="form-group" style={{flex: 1}}>
+                          <label>Temática *</label>
+                          <input type="text" value={editFormData.tematica} onChange={(e) => setEditFormData({...editFormData, tematica: e.target.value})} className="admin-input" required />
+                      </div>
+                  </div>
+                  <div className="form-group">
+                      <label>Comentario (Opcional)</label>
+                      <textarea value={editFormData.comentario} onChange={(e) => setEditFormData({...editFormData, comentario: e.target.value})} className="admin-input" rows="3"></textarea>
+                  </div>
+                  <div style={{display: 'flex', gap: '10px', marginTop: '10px'}}>
+                    <button type="button" className="btn-outline" style={{flex: 1}} onClick={() => setIsEditingData(false)}>Cancelar</button>
+                    <button type="submit" disabled={loading} className="btn-primary" style={{flex: 1}}>
+                        {loading ? 'Guardando...' : '💾 Guardar Cambios'}
+                    </button>
+                  </div>
+              </form>
+            ) : (
+              /* MODO LECTURA (El original que ya tenías) */
+              <div className="data-view-container">
+                  <div className="data-item">
+                      <span className="data-label">Evento:</span>
+                      <span className="data-value">{selectedEventData.nombre}</span>
+                  </div>
+                  {selectedEventData.datosCliente ? (
+                      <>
+                          <div className="data-item">
+                              <span className="data-label">Cliente:</span>
+                              <span className="data-value">{selectedEventData.datosCliente.nombreApellido}</span>
+                          </div>
+                          <div className="data-item">
+                              <span className="data-label">Correo:</span>
+                              <span className="data-value">{selectedEventData.datosCliente.correo}</span>
+                          </div>
+                          <div className="data-item">
+                              <span className="data-label">Fecha:</span>
+                              <span className="data-value">{selectedEventData.datosCliente.fechaEvento}</span>
+                          </div>
+                          <div className="data-item">
+                              <span className="data-label">Temática:</span>
+                              <span className="data-value">{selectedEventData.datosCliente.tematica}</span>
+                          </div>
+                          <div className="data-item" style={{flexDirection: 'column', alignItems: 'flex-start'}}>
+                              <span className="data-label" style={{marginBottom: '5px'}}>Comentarios:</span>
+                              <div className="data-value comment-box">{selectedEventData.datosCliente.comentario}</div>
+                          </div>
+                      </>
+                  ) : (
+                      <div style={{padding: '20px', textAlign: 'center', color: '#888'}}>
+                          Este evento no posee datos extendidos del cliente.
+                      </div>
+                  )}
+              </div>
+            )}
           </div>
         </div>
       )}

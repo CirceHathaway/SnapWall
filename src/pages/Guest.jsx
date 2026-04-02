@@ -7,7 +7,6 @@ import './Guest.css';
 // Componente reutilizable para el Footer
 const Footer = () => (
   <footer className="guest-footer">
-    {/* CORRECCIÓN: Un solo className unificado */}
     <div translate="no" className="notranslate footer-brand">
       <span className="guest-title-bold">Snap</span>
       <span className="guest-title-script">Wall</span>
@@ -40,6 +39,9 @@ export default function Guest() {
   const [nombre, setNombre] = useState('');
   const [subiendo, setSubiendo] = useState(false);
   const fileInputRef = useRef(null);
+
+  // NUEVO: Estado para manejar la notificación personalizada
+  const [notificacion, setNotificacion] = useState({ mostrar: false, mensaje: '', tipo: '' });
 
   useEffect(() => {
     const verificarEstadoEvento = async () => {
@@ -83,6 +85,14 @@ export default function Guest() {
     return fileData.secure_url;
   };
 
+  // NUEVA FUNCIÓN: Para mostrar y ocultar la notificación automáticamente
+  const mostrarNotificacion = (mensaje, tipo) => {
+    setNotificacion({ mostrar: true, mensaje, tipo });
+    setTimeout(() => {
+      setNotificacion({ mostrar: false, mensaje: '', tipo: '' });
+    }, 4000); // Se oculta después de 4 segundos
+  };
+
   const enviarContenido = async (e) => {
     e.preventDefault();
     if (imagenes.length === 0 && !mensaje.trim()) return;
@@ -121,11 +131,14 @@ export default function Guest() {
       setMensaje('');
       setNombre('');
       if (fileInputRef.current) fileInputRef.current.value = "";
-      alert("¡Enviado con éxito! 🚀 (Esperando aprobación del moderador)");
+      
+      // REEMPLAZO: Usamos la notificación personalizada en lugar de alert()
+      mostrarNotificacion("¡Enviado con éxito! 🚀 (Esperando aprobación)", "success");
 
     } catch (error) {
       console.error("Error:", error);
-      alert("Hubo un error al subir.");
+      // REEMPLAZO: Notificación de error
+      mostrarNotificacion("Hubo un error al subir. Intenta de nuevo.", "error");
     } finally {
       setSubiendo(false);
     }
@@ -172,6 +185,14 @@ export default function Guest() {
   // PANTALLA NORMAL (ACTIVO)
   return (
     <div className="guest-container">
+      
+      {/* NUEVO: Contenedor de la notificación (Aparece flotando) */}
+      {notificacion.mostrar && (
+        <div className={`guest-notification ${notificacion.tipo}`}>
+          {notificacion.mensaje}
+        </div>
+      )}
+
       <div className="guest-main-content">
         
         {/* LOGO FUERA DE LA TARJETA CON TIPOGRAFÍA DIVIDIDA */}

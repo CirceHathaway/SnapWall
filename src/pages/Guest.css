@@ -9,12 +9,48 @@
   color: white;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 /* Modificador para centrar el spinner en la pantalla de carga */
 .guest-container.loading-container {
   align-items: center;
   justify-content: center;
+}
+
+/* --- NOTIFICACIÓN PERSONALIZADA (TOAST) --- */
+.guest-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px 25px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+  z-index: 10000;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  animation: slideDownToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  pointer-events: none; /* Para que no interfiera si la tocan */
+}
+
+.guest-notification.success {
+  background: linear-gradient(45deg, #10b981, #059669); /* Verde lindo */
+  border: 1px solid #34d399;
+}
+
+.guest-notification.error {
+  background: linear-gradient(45deg, #ef4444, #dc2626); /* Rojo suave */
+  border: 1px solid #f87171;
+}
+
+@keyframes slideDownToast {
+  from { top: -50px; opacity: 0; }
+  to { top: 20px; opacity: 1; }
 }
 
 /* Bloque principal que empuja el footer hacia abajo */
@@ -41,7 +77,7 @@
 .guest-title-script {
   font-family: 'Great Vibes', cursive;
   font-weight: 400;
-  color: #ff0050; /* Rosa característico */
+  color: #ff0050; 
 }
 
 /* --- LOGO SUPERIOR SNAPWALL --- */
