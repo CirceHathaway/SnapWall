@@ -61,10 +61,10 @@
   align-items: center;
   justify-content: center;
   width: 90%;
-  max-width: 1400px;
+  max-width: 1500px; /* CAMBIADO: Aumentado de 1400px a 1500px para permitir crecer al contenido */
   height: auto;
-  margin-top: 50px; 
-  gap: 80px; 
+  margin-top: 70px; /* CAMBIADO: Aumentado de 50px a 100px para bajar el QR y el texto */
+  gap: 100px; /* CAMBIADO: Aumentado de 80px a 100px para separar más el QR del texto */
   z-index: 10;
 }
 
@@ -76,6 +76,7 @@
 
 .qr-frame-static {
   position: relative;
+  transform: scale(1.1); /* CAMBIADO: Agrandado el contenedor del QR un 10% extra */
 }
 
 .qr-white-box {
@@ -109,19 +110,19 @@
 
 .instruction-text {
   font-family: 'Segoe UI', sans-serif;
-  font-size: 3.5rem;
+  font-size: 4rem; /* CAMBIADO: Aumentado de 3.5rem a 4rem */
   font-weight: 700;
   color: white;
-  line-height: 1.1;
+  line-height: 1.15; /* CAMBIADO: Aumentado ligeramente para mejor lectura del texto más grande */
   text-shadow: 0 2px 15px rgba(0,0,0,0.8);
-  max-width: 700px;
+  max-width: 800px; /* CAMBIADO: Aumentado de 700px a 800px para evitar saltos de línea raros */
 }
 
 .decoration-line {
-  width: 120px;
-  height: 4px;
+  width: 150px; /* CAMBIADO: Aumentado de 120px a 150px para mantener proporción con el texto grande */
+  height: 5px; /* CAMBIADO: Aumentado de 4px a 5px */
   background: linear-gradient(90deg, #ffeb3b, #ff9800, transparent);
-  margin-top: 25px;
+  margin-top: 30px; /* CAMBIADO: Separado un poco más del texto */
   border-radius: 2px;
   box-shadow: 0 0 15px #ffeb3b;
 }
@@ -151,15 +152,18 @@
   }
   .split-layout {
     flex-direction: column;
-    margin-top: 30px;
+    margin-top: 50px; /* CAMBIADO: Bajado también en móvil para mantener proporción */
     gap: 40px;
+  }
+  .qr-frame-static {
+    transform: scale(1); /* Reseteamos escala extra en móviles para que no se desborde */
   }
   .right-panel {
     align-items: center;
     text-align: center;
   }
   .instruction-text {
-    font-size: 2rem;
+    font-size: 2.2rem; /* CAMBIADO: Ligeramente más grande en móvil (antes 2rem) */
   }
   .qr-title-bold {
     font-size: 2.8rem;
