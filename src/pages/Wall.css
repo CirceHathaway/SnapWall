@@ -263,7 +263,7 @@
   align-items: center;
   gap: 20px;
   background: rgba(10, 2, 26, 0.75); 
-  padding: 15px 25px 15px 15px;
+  padding: 15px 15px 15px 15px;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -280,14 +280,6 @@
   justify-content: center;
 }
 
-.wall-qr-text {
-  color: white;
-  font-family: 'Segoe UI', sans-serif;
-  font-size: 1.3rem;
-  font-weight: 600;
-  line-height: 1.3;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-}
 
 /* ====================================================
    NUEVO: LOGO SNAPWALL (ESQUINA INFERIOR DERECHA)

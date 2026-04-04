@@ -4,7 +4,7 @@ import { db } from '../firebase/config';
 import { collection, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore'; 
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import AlbumPDF from './AlbumPDF'; // IMPORTAMOS EL MOTOR SEPARADO
+import AlbumPDF from './AlbumPDF'; // IMPORTAMOS EL MOTOR SEPARADOs
 import './Album.css';
 
 export default function Album() {

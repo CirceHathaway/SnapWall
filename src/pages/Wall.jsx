@@ -240,9 +240,6 @@ export default function Wall() {
                   fgColor="#2e003e" 
                 />
               </div>
-              <div className="wall-qr-text">
-                ¡Sube tus fotos<br/>y mensajes!
-              </div>
             </motion.div>
 
             <motion.div 
