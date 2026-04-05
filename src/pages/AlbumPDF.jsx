@@ -1,206 +1,308 @@
-import { useEffect, useRef, useState } from 'react';
-import html2pdf from 'html2pdf.js';
-import './AlbumPDF.css';
+import { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
+import { db } from '../firebase/config';
+import { collection, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore'; 
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+// import AlbumPDF from './AlbumPDF'; // INHABILITADO TEMPORALMENTE
+import './Album.css';
 
-export default function AlbumPDF({ fotos, nombreEvento, onComplete }) {
-  const pdfContainerRef = useRef(null);
-  const [progreso, setProgreso] = useState('✨ Analizando proporciones de las fotos...');
-  const [paginas, setPaginas] = useState([]);
-  const [listoParaImprimir, setListoParaImprimir] = useState(false);
+export default function Album() {
+  const { eventId } = useParams();
+  const [fotos, setFotos] = useState([]);
+  const [nombreEvento, setNombreEvento] = useState(''); 
+  const [cargando, setCargando] = useState(true);
+  
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [textModalOpen, setTextModalOpen] = useState(false);
 
-  // TRUCO INFALIBLE: Evita que el navegador bloquee las fotos de Firebase por estar en caché
-  const obtenerUrlSegura = (url) => {
-    if (!url) return '';
-    return `${url}${url.includes('?') ? '&' : '?'}nocache=${Date.now()}`;
+  const [descargandoZip, setDescargandoZip] = useState(false);
+
+  useEffect(() => {
+    const cargarDatos = async () => {
+      try {
+        const eventDocRef = doc(db, "eventos", eventId);
+        const eventSnap = await getDoc(eventDocRef);
+        if (eventSnap.exists()) {
+          setNombreEvento(eventSnap.data().nombre);
+        }
+
+        const q = query(collection(db, `eventos/${eventId}/contenido`), orderBy('fecha', 'asc'));
+        const snapshot = await getDocs(q);
+        const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setFotos(docs);
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setCargando(false);
+      }
+    };
+    cargarDatos();
+  }, [eventId]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    const items = document.querySelectorAll('.masonry-item');
+    items.forEach((item) => observer.observe(item));
+
+    return () => observer.disconnect();
+  }, [fotos]);
+
+  const formatearTitulo = (titulo) => {
+    if (!titulo) return { parte1: '', parte2: '' };
+    const indiceDe = titulo.toLowerCase().lastIndexOf(" de ");
+    if (indiceDe !== -1) {
+      return { parte1: titulo.substring(0, indiceDe + 4).trim(), parte2: titulo.substring(indiceDe + 4).trim() };
+    }
+    const primerEspacio = titulo.indexOf(" ");
+    if (primerEspacio !== -1) {
+      return { parte1: titulo.substring(0, primerEspacio).trim(), parte2: titulo.substring(primerEspacio + 1).trim() };
+    }
+    return { parte1: titulo, parte2: '' };
   };
 
-  useEffect(() => {
-    const prepararLibro = async () => {
-      try {
-        const fotosProcesadas = await Promise.all(
-          fotos.map(async (f) => {
-            if (!f.urlImagen) return { ...f, tipoLayout: 'solo-texto' };
+  const { parte1, parte2 } = formatearTitulo(nombreEvento || "Nuestros Recuerdos");
 
-            return new Promise((resolve) => {
-              const img = new Image();
-              img.crossOrigin = 'anonymous';
-              img.onload = () => {
-                const esHorizontal = img.width > img.height;
-                const tieneMensaje = Boolean(f.mensaje && f.mensaje.trim() !== "");
-                
-                let tipoLayout = '';
-                if (tieneMensaje) {
-                  tipoLayout = 'foto-mensaje'; 
-                } else {
-                  tipoLayout = esHorizontal ? 'foto-horizontal' : 'foto-vertical'; 
-                }
-                
-                resolve({ ...f, tipoLayout });
-              };
-              img.onerror = () => resolve({ ...f, tipoLayout: 'foto-horizontal' }); 
-              img.src = obtenerUrlSegura(f.urlImagen);
-            });
-          })
-        );
+  const getColorClass = (index, hasText) => {
+    const colors = ['green', 'red', 'yellow'];
+    const color = colors[index % colors.length];
+    return hasText ? `album-label-${color}` : `album-full-frame-${color}`;
+  };
 
-        setProgreso('Armando las hojas del álbum...');
-        let paginasArmadas = [];
-        let paginaActual = null;
+  const openLightbox = (index) => {
+    setLightboxIndex(index);
+    document.body.style.overflow = 'hidden';
+  };
 
-        const guardarPagina = () => {
-          if (paginaActual) {
-            paginasArmadas.push(paginaActual);
-            paginaActual = null;
-          }
-        };
+  const closeLightbox = () => {
+    setLightboxIndex(null);
+    setTextModalOpen(false);
+    document.body.style.overflow = 'auto';
+  };
 
-        fotosProcesadas.forEach((item) => {
-          if (item.tipoLayout === 'foto-mensaje') {
-            guardarPagina();
-            paginasArmadas.push({ tipo: 'unica', items: [item] });
-          } 
-          else if (item.tipoLayout === 'foto-vertical' || item.tipoLayout === 'foto-horizontal') {
-            if (paginaActual && paginaActual.tipo === 'doble-foto' && paginaActual.items.length < 2) {
-              paginaActual.items.push(item);
-            } else {
-              guardarPagina();
-              paginaActual = { tipo: 'doble-foto', items: [item] };
-            }
-          } 
-          else if (item.tipoLayout === 'solo-texto') {
-            if (paginaActual && paginaActual.tipo === 'grilla-textos' && paginaActual.items.length < 3) {
-              paginaActual.items.push(item);
-            } else {
-              guardarPagina();
-              paginaActual = { tipo: 'grilla-textos', items: [item] };
-            }
-          }
-        });
-        guardarPagina();
+  const nextImage = useCallback((e) => {
+    if(e) e.stopPropagation();
+    setLightboxIndex((prev) => (prev + 1) % fotos.length);
+  }, [fotos.length]);
 
-        setPaginas(paginasArmadas);
-        setListoParaImprimir(true);
-
-      } catch (error) {
-        console.error("Error al preparar fotos", error);
-        onComplete();
-      }
-    };
-
-    prepararLibro();
-  }, [fotos, onComplete]);
+  const prevImage = useCallback((e) => {
+    if(e) e.stopPropagation();
+    setLightboxIndex((prev) => (prev - 1 + fotos.length) % fotos.length);
+  }, [fotos.length]);
 
   useEffect(() => {
-    if (!listoParaImprimir) return;
-
-    const generarPDF = async () => {
-      setProgreso('Renderizando en alta calidad (puede tardar un poco)...');
-      
-      // Esperamos 4 segundos para asegurar que hasta la última foto termine de cargar en el DOM
-      await new Promise(resolve => setTimeout(resolve, 4000));
-      
-      setProgreso('Creando el archivo PDF final...');
-
-      const elemento = pdfContainerRef.current;
-      const opciones = {
-        margin: 0,
-        filename: `${nombreEvento.replace(/\s+/g, '_')}_Album.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { 
-          scale: 2, 
-          useCORS: true, 
-          allowTaint: true,
-          backgroundColor: '#ffffff',
-          windowWidth: 794,
-          scrollY: 0
-        },
-        jsPDF: { unit: 'px', format: [794, 1123], orientation: 'portrait' }
-      };
-
-      try {
-        await html2pdf().set(opciones).from(elemento).save();
-      } catch (error) {
-        console.error("Error al compilar PDF:", error);
-        alert("Hubo un error al generar el documento.");
-      } finally {
-        onComplete();
-      }
+    if (lightboxIndex === null) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+      if (e.key === 'Escape') closeLightbox();
     };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxIndex, nextImage, prevImage]);
 
-    generarPDF();
-  }, [listoParaImprimir, nombreEvento, onComplete]);
+  const currentItem = lightboxIndex !== null ? fotos[lightboxIndex] : null;
 
-  const IconoMensaje = () => (
-    <svg viewBox="0 0 24 24" width="24" height="24" fill="#b91646">
-      <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16ZM7 9H17V11H7V9ZM7 12H14V14H7V12Z" />
-    </svg>
-  );
+  const renderMessage = (msg) => {
+    const limit = 80;
+    if (msg.length <= limit) return <span>"{msg}"</span>;
+    return (
+      <>
+        <span>"{msg.substring(0, limit)}..."</span>
+        <div className="read-more-link" onClick={(e) => { e.stopPropagation(); setTextModalOpen(true); }}>
+           Ver más
+        </div>
+      </>
+    );
+  };
+
+  const descargarFotoDirecta = async (url, id) => {
+    try {
+      const response = await fetch(url, { mode: 'cors' });
+      const blob = await response.blob();
+      const objectUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = `Recuerdo-${id}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(objectUrl);
+    } catch (error) {
+      window.open(url, '_blank'); 
+    }
+  };
+
+  const generarZIP = async () => {
+    setDescargandoZip(true);
+    try {
+      const zip = new JSZip();
+      const carpeta = zip.folder("Recuerdos");
+      const fotosConUrl = fotos.filter(f => f.urlImagen);
+
+      await Promise.all(fotosConUrl.map(async (foto, index) => {
+        try {
+          const res = await fetch(foto.urlImagen, { mode: 'cors' });
+          const blob = await res.blob();
+          carpeta.file(`Foto_${index + 1}.jpg`, blob);
+        } catch (e) {
+          console.error("Error zipeando imagen", e);
+        }
+      }));
+
+      const contenidoZip = await zip.generateAsync({ type: "blob" });
+      saveAs(contenidoZip, `${nombreEvento.replace(/\s+/g, '_')}_Fotos.zip`);
+    } catch (error) {
+      alert("Hubo un error al generar el ZIP.");
+    } finally {
+      setDescargandoZip(false);
+    }
+  };
 
   return (
-    <div className="pdf-export-wrapper">
+    <div className="album-container">
       
-      <div className="pdf-loading-overlay">
-        <div className="pdf-loading-card">
-          <div className="loader"></div>
-          <h2>{progreso}</h2>
-          <p>No cierres esta ventana.</p>
-        </div>
+      <div className="album-background-decorations">
+        <img src="/adorno1.png" alt="" className="bg-decor top-left" />
+        <img src="/adorno2.png" alt="" className="bg-decor bottom-right" />
+        <img src="/adorno3.png" alt="" className="bg-decor bottom-left" />
       </div>
 
-      <div className="pdf-generator-container" ref={pdfContainerRef}>
+      <div className="album-header">
+        <h1 className="album-title">
+          <span className="title-bold">{parte1}</span>
+          {parte2 && <span className="title-script">{parte2}</span>}
+        </h1>
         
-        {/* PORTADA: Usamos ruta relativa directa a public */}
-        <div className="pdf-a4-page">
-          <img src="/portada-pdf.jpg" className="pdf-bg-image" alt="Portada" />
-        </div>
+        <p className="album-subtitle">
+          {cargando ? 'Cargando magia...' : 'Un Viaje a Través de Momentos Inolvidables'}
+        </p>
 
-        {paginas.map((pagina, indexPagina) => (
-          <div key={`pdf-page-${indexPagina}`} className="pdf-a4-page">
-            
-            {/* FONDO: Usamos ruta relativa directa a public */}
-            <img src="/fondo-pdf.jpg" className="pdf-bg-image" alt="Fondo" />
-            
-            <div className="pdf-content-area">
-              
-              {pagina.tipo === 'doble-foto' && (
-                <div className="pdf-layout-doble">
-                  {pagina.items.map(item => (
-                    <div key={item.id} className="pdf-photo-box">
-                      <img src={obtenerUrlSegura(item.urlImagen)} alt="Recuerdo" crossOrigin="anonymous" />
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {pagina.tipo === 'unica' && pagina.items.map(item => (
-                <div key={item.id} className="pdf-layout-unica">
-                  <div className="pdf-photo-box-grande">
-                    <img src={obtenerUrlSegura(item.urlImagen)} alt="Recuerdo" crossOrigin="anonymous" />
-                  </div>
-                  <div className="pdf-cartel-mensaje">
-                    <div className="pdf-cartel-circulo"><IconoMensaje /></div>
-                    <div className="pdf-cartel-texto">"{item.mensaje}"</div>
-                    <div className="pdf-cartel-autor">— {item.autor || 'Invitado'}</div>
-                  </div>
-                </div>
-              ))}
-
-              {pagina.tipo === 'grilla-textos' && (
-                <div className="pdf-layout-textos">
-                  {pagina.items.map(item => (
-                    <div key={item.id} className="pdf-cartel-mensaje">
-                      <div className="pdf-cartel-circulo"><IconoMensaje /></div>
-                      <div className="pdf-cartel-texto">"{item.mensaje}"</div>
-                      <div className="pdf-cartel-autor">— {item.autor || 'Invitado'}</div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
+        <div className="css-separator">
+          <div className="separator-diamond"></div>
+          <div className="separator-line-group">
+            <div className="separator-line"></div>
+            <div className="separator-line"></div>
+          </div>
+          <div className="separator-center-star">
+            <div className="star-circle">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="#b91646">
+                <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/>
+              </svg>
             </div>
           </div>
-        ))}
+          <div className="separator-line-group">
+            <div className="separator-line"></div>
+            <div className="separator-line"></div>
+          </div>
+          <div className="separator-diamond"></div>
+        </div>
+
+        {fotos.length > 0 && (
+          <div className="album-action-buttons">
+            <button onClick={generarZIP} disabled={descargandoZip} className="btn-export zip-btn">
+              {descargandoZip ? '📦 Empaquetando fotos...' : '📦 Descargar Todas las Fotos (.ZIP)'}
+            </button>
+            <button disabled className="btn-export pdf-btn">
+              📄 Guardar Álbum Visual (.PDF)
+            </button>
+          </div>
+        )}
       </div>
+
+      <div className="masonry-grid">
+        {fotos.map((item, index) => {
+          const hasText = Boolean(item.mensaje && item.mensaje.trim() !== "");
+          return (
+            <div 
+              key={item.id} 
+              className={`masonry-item ${!item.urlImagen ? 'album-custom-text-card' : ''}`} 
+              onClick={() => openLightbox(index)}
+            >
+              {item.urlImagen ? (
+                <div className={`album-photo-frame ${getColorClass(index, hasText)}`}>
+                  <div className="album-photo-wrapper">
+                    <img src={item.urlImagen} alt="Recuerdo" className="album-photo" loading="lazy" crossOrigin="anonymous" />
+                  </div>
+                  {hasText && (
+                    <div className="album-item-footer">
+                      <div className="album-item-message">"{item.mensaje}"</div>
+                      <div className="album-item-author">— {item.autor || 'Invitado'}</div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                   <div className="album-layer-papel"></div>
+                   <img src="/florSuperior.png" className="album-layer-adorno album-flor-sup-der" alt="" loading="lazy" />
+                   <img src="/florDerecho.png" className="album-layer-adorno album-flor-inf-der" alt="" loading="lazy" />
+                   <img src="/florInferior.png" className="album-layer-adorno album-flor-inf-izq" alt="" loading="lazy" />
+                   <img src="/iconCarta.png" className="album-layer-adorno album-icon-carta" alt="" loading="lazy" />
+                   <div className="album-text-content-overlay">
+                      <div className="album-text-only-message">"{item.mensaje}"</div>
+                      <div className="album-text-only-author">— {item.autor || 'Invitado'}</div>
+                   </div>
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {currentItem && (
+        <div className="lightbox-overlay"> 
+          <div className="lightbox-top-bar" onClick={(e) => e.stopPropagation()}>
+            {currentItem.urlImagen && (
+              <button onClick={() => descargarFotoDirecta(currentItem.urlImagen, currentItem.id)} className="icon-btn" title="Descargar Original">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+              </button>
+            )}
+            <button className="icon-btn close-variant" onClick={closeLightbox}>✕</button>
+          </div>
+
+          <button className="nav-btn prev-btn" onClick={prevImage}>❮</button>
+          <button className="nav-btn next-btn" onClick={nextImage}>❯</button>
+
+          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+            {currentItem.urlImagen ? (
+              <img src={currentItem.urlImagen} className="lightbox-img" alt="Full size" />
+            ) : (
+              <div className="lightbox-text-only">"{currentItem.mensaje}"</div>
+            )}
+            
+            {(currentItem.mensaje || currentItem.autor) && (
+              <div className="lightbox-details">
+                {currentItem.urlImagen && currentItem.mensaje && (
+                  <div className="lightbox-message">{renderMessage(currentItem.mensaje)}</div>
+                )}
+                <div className="lightbox-author">— {currentItem.autor || 'Invitado'}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {textModalOpen && currentItem && (
+        <div className="text-modal-overlay"> 
+          <div className="text-modal-card" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setTextModalOpen(false)} style={{position:'absolute', top:'10px', right:'15px', background:'none', border:'none', color:'#333', fontSize:'1.5rem', cursor:'pointer'}}>✕</button>
+            <div className="text-modal-content">"{currentItem.mensaje}"</div>
+            <div style={{fontFamily: "'Segoe UI', sans-serif", fontSize: '0.9rem', color: '#5a4a42', fontWeight: 'bold', textTransform: 'uppercase'}}>— {currentItem.autor || 'Invitado'}</div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

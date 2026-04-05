@@ -93,21 +93,22 @@
 .lightbox-details { margin-top: 15px; text-align: center; color: white; width: 100%; max-width: 700px; }
 .lightbox-message { font-size: 1.1rem; line-height: 1.5; margin-bottom: 5px; color: #eee; }
 
-/* CORRECCIÓN: Estilo de botón para asegurar que sea visible y fácil de clickear en móviles */
+/* CORRECCIÓN: Botón "Ver más" separado como bloque */
 .read-more-link { 
   color: #fcd34d; 
   font-size: 1rem; 
-  margin-left: 8px; 
+  margin: 6px auto 0 auto; 
   cursor: pointer; 
   font-weight: bold; 
-  padding: 5px 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  white-space: nowrap;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  display: block; 
+  width: fit-content;
 }
-.read-more-link:hover { background: rgba(255, 255, 255, 0.2); }
+.read-more-link:hover { background: rgba(255, 255, 255, 0.25); }
 
-.lightbox-author { color: #888; font-size: 0.85rem; margin-top: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+.lightbox-author { color: #888; font-size: 0.85rem; margin-top: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 .text-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; display: flex; justify-content: center; align-items: center; padding: 20px; }
 .text-modal-card { background: #fff; padding: 40px; border-radius: 4px; border: 2px solid #111; max-width: 600px; width: 100%; color: #333; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.6); text-align: center; background-image: url('/fondo.png'); background-size: cover; }
 .text-modal-content { font-family: 'Caveat', cursive; font-size: 1.8rem; line-height: 1.4; margin-bottom: 25px; max-height: 60vh; overflow-y: auto; color: #2c1e16; padding-right: 10px; }
@@ -136,9 +137,8 @@
   .title-script { font-size: 3.5rem; }
   .album-subtitle { font-size: 1.1rem; }
   
-  /* CORRECCIÓN: Ajustamos las alturas para asegurar que el botón "Ver más" no quede debajo de la pantalla en móviles */
   .lightbox-content { max-height: 88vh; justify-content: center; } 
-  .lightbox-img { max-height: 55vh; } /* Achicamos la foto un poco para darle lugar al texto largo */
+  .lightbox-img { max-height: 55vh; } 
   .lightbox-details { padding-bottom: 20px; }
   
   .top-left { width: 150px; top: 0; left: 0; }

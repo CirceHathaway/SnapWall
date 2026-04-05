@@ -154,13 +154,19 @@ export default function Wall() {
     return () => clearInterval(intervalo);
   }, [fotos.length]);
 
-  // Ciclo de 3 tiempos (cada 3 minutos cambia de fase)
+  // CAMBIO: Ciclo de 3 tiempos con duraciones independientes
   useEffect(() => {
-    const intervaloFases = setInterval(() => {
+    let duracion = 180000; // Valor de seguridad
+    if (faseCiclo === 0) duracion = 400000; // 5 minutos para Tiempo 1 (QR y Logo en Esquinas)
+    if (faseCiclo === 1) duracion = 400000; // 5 minutos para Tiempo 2 (Ticker Mensajes Inferior)
+    if (faseCiclo === 2) duracion = 180000; // 2 minutos para Tiempo 3 (QR Gigante Central)
+
+    const timeoutFases = setTimeout(() => {
       setFaseCiclo(prev => (prev + 1) % 3);
-    }, 180000); // 3 minutos = 180000 ms
-    return () => clearInterval(intervaloFases);
-  }, []);
+    }, duracion);
+
+    return () => clearTimeout(timeoutFases);
+  }, [faseCiclo]);
 
   const fotoActual = fotos[indiceActual % fotos.length];
 
@@ -308,7 +314,6 @@ export default function Wall() {
               </div>
               
               <div style={{ background: 'white', padding: '20px', borderRadius: '20px', boxShadow: '0 0 40px rgba(0,0,0,0.5)' }}>
-                {/* CAMBIO: Agrandado el QR central de 300 a 400 */}
                 <QRCode 
                   value={urlInvitado} 
                   size={400} 

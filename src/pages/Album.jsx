@@ -115,13 +115,14 @@ export default function Album() {
   const renderMessage = (msg) => {
     const limit = 80;
     if (msg.length <= limit) return <span>"{msg}"</span>;
+    // CAMBIO: Ahora el texto y el botón están separados para que caiga abajo
     return (
-      <span>
-        "{msg.substring(0, limit)}..." 
-        <span className="read-more-link" onClick={(e) => { e.stopPropagation(); setTextModalOpen(true); }}>
+      <>
+        <span>"{msg.substring(0, limit)}..."</span>
+        <div className="read-more-link" onClick={(e) => { e.stopPropagation(); setTextModalOpen(true); }}>
            Ver más
-        </span>
-      </span>
+        </div>
+      </>
     );
   };
 
