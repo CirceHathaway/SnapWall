@@ -19,13 +19,21 @@ export default function Wall() {
   const colaPasosRef = useRef([]);
   const isHeroPlayingRef = useRef(false);
   const heroTimeoutRef = useRef(null);
+  const preCargaTimeoutRef = useRef(null); 
 
-  const [mostrarFooter, setMostrarFooter] = useState(false);
+  // Estado para manejar los 3 tiempos del ciclo (0 = Esquinas, 1 = Ticker, 2 = QR Central)
+  const [faseCiclo, setFaseCiclo] = useState(0);
+  const faseCicloRef = useRef(0); // Referencia mutable para leer el valor exacto dentro de los timeouts
 
   const idsMostradosRef = useRef(new Set());
   const isFirstLoad = useRef(true);
 
   const urlInvitado = `${window.location.origin}/evento/${eventId}`;
+
+  // Mantener la referencia sincronizada con el estado real
+  useEffect(() => {
+    faseCicloRef.current = faseCiclo;
+  }, [faseCiclo]);
 
   useEffect(() => {
     const q = query(collection(db, `eventos/${eventId}/contenido`), orderBy('fecha', 'asc'));
@@ -86,6 +94,12 @@ export default function Wall() {
   };
 
   const procesarSiguienteHero = () => {
+    // Si la fase es 2 (Tiempo 3 - QR Gigante), pausamos el Hero Mode hasta que termine.
+    if (faseCicloRef.current === 2) {
+      isHeroPlayingRef.current = false;
+      return; 
+    }
+
     if (colaPasosRef.current.length === 0) {
       isHeroPlayingRef.current = false;
       setHeroItem(null);
@@ -95,19 +109,30 @@ export default function Wall() {
     isHeroPlayingRef.current = true;
     const siguientePaso = colaPasosRef.current.shift(); 
 
-    setHeroItem(siguientePaso.itemOriginal);
-    setHeroPaso({ tipo: siguientePaso.tipo, url: siguientePaso.url });
+    preCargaTimeoutRef.current = setTimeout(() => {
+      setHeroItem(siguientePaso.itemOriginal);
+      setHeroPaso({ tipo: siguientePaso.tipo, url: siguientePaso.url });
 
-    const duracion = siguientePaso.tipo === 'foto' ? 25000 : 25000;
+      const duracion = siguientePaso.tipo === 'foto' ? 25000 : 25000;
 
-    heroTimeoutRef.current = setTimeout(() => {
-      procesarSiguienteHero();
-    }, duracion);
+      heroTimeoutRef.current = setTimeout(() => {
+        procesarSiguienteHero();
+      }, duracion);
+    }, 4000); 
   };
+
+  // Si salimos del Tiempo 3 (fase 2) y hay elementos esperando en la fila, activamos el Hero
+  useEffect(() => {
+    if (faseCiclo !== 2 && !isHeroPlayingRef.current && colaPasosRef.current.length > 0) {
+      procesarSiguienteHero();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [faseCiclo]);
 
   useEffect(() => {
     return () => {
       if (heroTimeoutRef.current) clearTimeout(heroTimeoutRef.current);
+      if (preCargaTimeoutRef.current) clearTimeout(preCargaTimeoutRef.current);
     };
   }, []);
 
@@ -129,11 +154,12 @@ export default function Wall() {
     return () => clearInterval(intervalo);
   }, [fotos.length]);
 
+  // Ciclo de 3 tiempos (cada 3 minutos cambia de fase)
   useEffect(() => {
-    const intervaloFooter = setInterval(() => {
-      setMostrarFooter(prev => !prev);
-    }, 300000); 
-    return () => clearInterval(intervaloFooter);
+    const intervaloFases = setInterval(() => {
+      setFaseCiclo(prev => (prev + 1) % 3);
+    }, 180000); // 3 minutos = 180000 ms
+    return () => clearInterval(intervaloFases);
   }, []);
 
   const fotoActual = fotos[indiceActual % fotos.length];
@@ -149,36 +175,31 @@ export default function Wall() {
       
       <div className="fairy-dust"></div>
 
-      <AnimatePresence>
-        {heroItem && (
-          <motion.div 
-            className="hero-overlay"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          >
-            <div className={`new-tag ${heroPaso.tipo === 'mensaje' ? 'tag-message' : ''}`}>
-              {heroPaso.tipo === 'foto' ? '📸 ¡Nueva Foto!' : '💌 ¡Nuevo Mensaje!'}
-            </div>
-
-            <AnimatePresence mode="wait">
-              {heroPaso.tipo === 'foto' ? (
+      {/* ÁREA CENTRAL: Muestra Fotos Normales, o el Hero. Oculto solo en Fase 2 (Tiempo 3) */}
+      {/* CAMBIO Z-INDEX: Le agregamos style con zIndex superior para que tape al QR del Tiempo 1 */}
+      {faseCiclo !== 2 && (
+        <div className="slideshow-area" style={{ zIndex: heroItem ? 200 : 10 }}>
+          <AnimatePresence mode="wait">
+            {heroItem ? (
+              // --- MODO HERO (INTERRUMPE LA GALERÍA Y SE PONE POR ENCIMA DE TODO) ---
+              heroPaso.tipo === 'foto' ? (
                 <motion.img 
-                  key={heroPaso.url} 
+                  key={`hero-foto-${heroPaso.url}`} 
                   src={heroPaso.url} 
-                  className="hero-image" 
-                  initial={{ scale: 0.5, opacity: 0 }} 
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.8, opacity: 0 }}
-                  transition={{ duration: 0.6 }}
-                  /* CAMBIO: Detectamos si es horizontal y le agregamos la clase de ajuste */
+                  className="active-slide" 
+                  initial={{ opacity: 0, scale: 0.9 }} 
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1 }}
                   onLoad={(e) => {
                     if (e.target.naturalWidth > e.target.naturalHeight) {
-                      e.target.classList.add('foto-horizontal');
+                      e.target.classList.add('foto-horizontal-slide');
                     }
                   }}
                 />
               ) : (
                 <motion.div 
-                  key="mensaje-hero"
+                  key={`hero-msg-${heroItem.id}`}
                   className="hero-text-card card-blue"
                   initial={{ scale: 0.8, y: 50, opacity: 0 }} 
                   animate={{ scale: 1, y: 0, opacity: 1 }}
@@ -193,38 +214,34 @@ export default function Wall() {
                     — {heroItem.autor || 'Invitado'}
                   </div>
                 </motion.div>
-              )}
-            </AnimatePresence>
-            
-          </motion.div>
-        )}
-      </AnimatePresence>
+              )
+            ) : fotoActual ? (
+              // --- MODO SLIDESHOW NORMAL ---
+              <motion.img
+                key={`slide-${fotoActual.id}`} src={fotoActual.urlImagen} className="active-slide"
+                initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }} transition={{ duration: 1 }}
+                onLoad={(e) => {
+                  if (e.target.naturalWidth > e.target.naturalHeight) {
+                    e.target.classList.add('foto-horizontal-slide');
+                  }
+                }}
+              />
+            ) : (
+              <div style={{color: 'white', textAlign: 'center', zIndex: 10}}>
+                <h1>Esperando recuerdos...</h1>
+                <p>Escanea el QR y sube tu foto (requiere aprobación)</p>
+              </div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
 
-      <div className="slideshow-area">
-        <AnimatePresence mode="wait">
-          {fotoActual ? (
-            <motion.img
-              key={fotoActual.id} src={fotoActual.urlImagen} className="active-slide"
-              initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }} transition={{ duration: 1 }}
-              /* CAMBIO: Detectamos si es horizontal y le agregamos la clase de ajuste */
-              onLoad={(e) => {
-                if (e.target.naturalWidth > e.target.naturalHeight) {
-                  e.target.classList.add('foto-horizontal-slide');
-                }
-              }}
-            />
-          ) : (
-            <div style={{color: 'white', textAlign: 'center', zIndex: 10}}>
-              <h1>Esperando recuerdos...</h1>
-              <p>Escanea el QR y sube tu foto (requiere aprobación)</p>
-            </div>
-          )}
-        </AnimatePresence>
-      </div>
-
+      {/* ELEMENTOS SUPERPUESTOS SEGÚN LA FASE DEL CICLO */}
       <AnimatePresence>
-        {!mostrarFooter && (
+        
+        {/* TIEMPO 1: QR Inferior y Logo Inferior */}
+        {faseCiclo === 0 && (
           <>
             <motion.div 
               className="wall-qr-container"
@@ -254,10 +271,9 @@ export default function Wall() {
             </motion.div>
           </>
         )}
-      </AnimatePresence>
 
-      <AnimatePresence>
-        {mensajes.length > 0 && mostrarFooter && (
+        {/* TIEMPO 2: Ticker de Mensajes (Footer) */}
+        {faseCiclo === 1 && mensajes.length > 0 && (
           <motion.div 
             className="footer-ticker"
             initial={{ y: 80 }} 
@@ -271,6 +287,42 @@ export default function Wall() {
             </div>
           </motion.div>
         )}
+
+        {/* TIEMPO 3: QR GIGANTE CENTRAL */}
+        {faseCiclo === 2 && (
+          <motion.div 
+            className="qr-central-overlay"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="hero-text-card card-blue"
+              style={{ padding: '60px 80px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '30px' }}
+              initial={{ scale: 0.8, y: 50, opacity: 0 }} 
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))' }}>
+                <span className="wall-logo-bold" style={{ fontSize: '4.5rem' }}>Snap</span>
+                <span className="wall-logo-script" style={{ fontSize: '5.5rem' }}>Wall</span>
+              </div>
+              
+              <div style={{ background: 'white', padding: '20px', borderRadius: '20px', boxShadow: '0 0 40px rgba(0,0,0,0.5)' }}>
+                {/* CAMBIO: Agrandado el QR central de 300 a 400 */}
+                <QRCode 
+                  value={urlInvitado} 
+                  size={400} 
+                  fgColor="#2e003e" 
+                />
+              </div>
+
+              <h2 style={{ fontFamily: "'Segoe UI', sans-serif", fontSize: '2.5rem', color: 'white', margin: 0, textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>
+                ¡Escanea para subir tus fotos!
+              </h2>
+            </motion.div>
+          </motion.div>
+        )}
+
       </AnimatePresence>
 
     </div>

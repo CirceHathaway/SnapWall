@@ -20,7 +20,8 @@ const Footer = () => (
         <a href="#" className="footer-social-link" title="Facebook">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
         </a>
-        <a href="#" className="footer-social-link" title="WhatsApp">
+        {/* CAMBIO AQUÍ: Se agregó el link de WhatsApp con el número */}
+        <a href="https://wa.me/5491132754754" target="_blank" rel="noopener noreferrer" className="footer-social-link" title="WhatsApp">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path><path d="M10 10l.01 .011"></path><path d="M14 14l.01 .011"></path><path d="M10 14a4 4 0 0 0 4 -4"></path></svg>
         </a>
       </div>
@@ -40,7 +41,6 @@ export default function Guest() {
   const [subiendo, setSubiendo] = useState(false);
   const fileInputRef = useRef(null);
 
-  // NUEVO: Estado para manejar la notificación personalizada
   const [notificacion, setNotificacion] = useState({ mostrar: false, mensaje: '', tipo: '' });
 
   useEffect(() => {
@@ -85,12 +85,11 @@ export default function Guest() {
     return fileData.secure_url;
   };
 
-  // NUEVA FUNCIÓN: Para mostrar y ocultar la notificación automáticamente
   const mostrarNotificacion = (mensaje, tipo) => {
     setNotificacion({ mostrar: true, mensaje, tipo });
     setTimeout(() => {
       setNotificacion({ mostrar: false, mensaje: '', tipo: '' });
-    }, 4000); // Se oculta después de 4 segundos
+    }, 4000); 
   };
 
   const enviarContenido = async (e) => {
@@ -132,12 +131,10 @@ export default function Guest() {
       setNombre('');
       if (fileInputRef.current) fileInputRef.current.value = "";
       
-      // REEMPLAZO: Usamos la notificación personalizada en lugar de alert()
       mostrarNotificacion("¡Enviado con éxito! 🚀 (Esperando aprobación)", "success");
 
     } catch (error) {
       console.error("Error:", error);
-      // REEMPLAZO: Notificación de error
       mostrarNotificacion("Hubo un error al subir. Intenta de nuevo.", "error");
     } finally {
       setSubiendo(false);
@@ -146,7 +143,6 @@ export default function Guest() {
 
   const isFormEmpty = imagenes.length === 0 && !mensaje.trim();
 
-  // PANTALLA DE CARGA
   if (cargandoEvento) {
     return (
       <div className="guest-container loading-container">
@@ -155,7 +151,6 @@ export default function Guest() {
     );
   }
 
-  // PANTALLA EVENTO FINALIZADO
   if (!eventoActivo) {
     return (
       <div className="guest-container">
@@ -182,11 +177,9 @@ export default function Guest() {
     );
   }
 
-  // PANTALLA NORMAL (ACTIVO)
   return (
     <div className="guest-container">
       
-      {/* NUEVO: Contenedor de la notificación (Aparece flotando) */}
       {notificacion.mostrar && (
         <div className={`guest-notification ${notificacion.tipo}`}>
           {notificacion.mensaje}
@@ -195,7 +188,6 @@ export default function Guest() {
 
       <div className="guest-main-content">
         
-        {/* LOGO FUERA DE LA TARJETA CON TIPOGRAFÍA DIVIDIDA */}
         <div translate="no" className="notranslate guest-logo">
           <span className="guest-title-bold">Snap</span>
           <span className="guest-title-script">Wall</span>
@@ -215,7 +207,7 @@ export default function Guest() {
               <textarea placeholder="Escribe una dedicatoria..." value={mensaje} onChange={(e) => setMensaje(e.target.value)} maxLength={442} className="guest-textarea" />
               <div className="guest-char-counter">{mensaje.length} / 442</div>
             </div>
-            {mensaje.trim().length > 0 && (
+            {(mensaje.trim().length > 0 || imagenes.length > 0) && (
               <div className="guest-name-container">
                 <label className="guest-label">¿Quién escribe?</label>
                 <input type="text" placeholder="Tu nombre (Opcional)" value={nombre} onChange={(e) => setNombre(e.target.value)} className="guest-input" />
