@@ -8,6 +8,7 @@ import Wall from './pages/Wall';
 import Album from './pages/Album';
 import QRScreen from './pages/QRScreen';
 import PrintableQR from './pages/PrintableQR';
+import SplashScreen from './pages/SplashScreen';
 
 function App() {
   return (
@@ -31,6 +32,8 @@ function App() {
 
         {/* AGREGAR ESTA RUTA NUEVA: */}
         <Route path="/print-qr/:eventId" element={<PrintableQR />} />
+
+        <Route path="/splash/:eventId" element={<SplashScreen />} />
         
       </Routes>
     </BrowserRouter>

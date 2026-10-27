@@ -26,7 +26,6 @@ export default function Admin() {
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
   const [selectedEventData, setSelectedEventData] = useState(null);
 
-  // NUEVO: Estados para el modo de edición en el modal de datos
   const [isEditingData, setIsEditingData] = useState(false);
   const [editFormData, setEditFormData] = useState({
     nombre: '',
@@ -114,7 +113,6 @@ export default function Admin() {
     } catch (error) { console.error(error); }
   };
 
-  // NUEVA FUNCIÓN: Para guardar los cambios editados del cliente
   const guardarCambiosCliente = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -130,7 +128,6 @@ export default function Admin() {
           comentario: editFormData.comentario || "Sin comentarios"
         }
       });
-      // Actualizamos el estado local para que el modal refleje los cambios al instante
       setSelectedEventData(prev => ({
         ...prev,
         nombre: editFormData.nombre,
@@ -254,7 +251,6 @@ export default function Admin() {
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
                         <div className="btn-actions">
-                            {/* REEMPLAZO: Llama a abrirModalDatos en vez de setear estados crudos */}
                             <button onClick={() => abrirModalDatos(evento)} className="btn-outline" style={{flex: 1, borderColor: '#3b82f6', color: '#3b82f6'}}>📋 + Datos</button>
                             <Link to={`/album/${evento.id}`} target="_blank" style={{flex: 1}}>
                                 <button className="btn-outline" style={{width: '100%'}}>📂 Álbum</button>
@@ -297,6 +293,12 @@ export default function Admin() {
                       <>
                         <Link to={`/pantalla/${eventoId}`} target="_blank" style={{textDecoration:'none'}}><button className="big-btn btn-purple">🖥️ Pantalla</button></Link>
                         <Link to={`/qr/${eventoId}`} target="_blank" style={{textDecoration:'none'}}><button className="big-btn btn-yellow">📲 QR Proyector</button></Link>
+                        
+                        {/* CAMBIO: Se agregó el botón de Logo que lleva a SplashScreen */}
+                        <Link to={`/splash/${eventoId}`} target="_blank" style={{textDecoration:'none'}}>
+                          <button className="big-btn" style={{backgroundColor: '#059669'}}>✨ Logo</button>
+                        </Link>
+                        
                         <Link to={`/album/${eventoId}`} target="_blank" style={{textDecoration:'none'}}><button className="big-btn btn-blue">📂 Álbum</button></Link>
                         <button className="big-btn btn-red" onClick={() => setIsFinishModalOpen(true)}>🛑 Finalizar</button>
                       </>
@@ -510,7 +512,7 @@ export default function Admin() {
                   </div>
               </form>
             ) : (
-              /* MODO LECTURA (El original que ya tenías) */
+              /* MODO LECTURA */
               <div className="data-view-container">
                   <div className="data-item">
                       <span className="data-label">Evento:</span>

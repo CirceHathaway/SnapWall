@@ -207,7 +207,7 @@
 .wall-qr-container {
   position: absolute;
   bottom: 20px;
-  left: 20px;
+  left: 50px; /* Aumentado de 20px a 50px para moverlo a la derecha */
   display: flex;
   align-items: center;
   gap: 20px;
@@ -235,7 +235,7 @@
 .wall-brand-container {
   position: absolute;
   bottom: 15px;
-  right: 25px;
+  right: 70px; /* Aumentado de 25px a 70px para moverlo a la izquierda */
   display: flex;
   align-items: center;
   justify-content: center;

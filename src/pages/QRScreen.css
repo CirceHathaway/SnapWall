@@ -1,6 +1,6 @@
 /* src/pages/QRScreen.css */
 
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@1,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Great+Vibes&family=Playfair+Display:ital,wght@1,800&display=swap');
 
 .qr-screen-container {
   height: 100vh;
@@ -32,27 +32,34 @@
   gap: 15px;
   width: 100%;
   margin-bottom: 0;
-  line-height: 1;
+  line-height: 0.6; /* CAMBIO: Reduce el alto de la línea para compensar el tamaño gigante */
   position: relative;
   filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); 
 }
 
-/* Clases únicas para la pantalla QR */
 .qr-title-bold {
-  font-family: 'Playfair Display', serif;
-  font-style: italic;
-  font-weight: 800;
-  font-size: 4rem;
-  letter-spacing: 1px;
-  color: #ffffff;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 3.2rem;
+  margin: 0;
+  letter-spacing: 4px;
+  color: #fdfdfd;
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
+/* CAMBIO: Se aumentó el tamaño a 9.5rem */
 .qr-title-script {
   font-family: 'Great Vibes', cursive;
   font-weight: 400;
-  font-size: 5.5rem;
-  margin-top: -10px;
+  font-size: 9.0rem; 
+  margin-top: 5px;
   color: #fdc202;
+  text-shadow: 
+    0 0 10px rgba(253, 194, 2, 0.8),
+    0 0 20px rgba(253, 194, 2, 0.8),
+    0 0 40px rgba(253, 194, 2, 0.6),
+    0 0 60px rgba(255, 140, 0, 0.6),
+    0 0 80px rgba(255, 140, 0, 0.4);
 }
 
 .split-layout {
@@ -61,10 +68,10 @@
   align-items: center;
   justify-content: center;
   width: 90%;
-  max-width: 1500px; /* CAMBIADO: Aumentado de 1400px a 1500px para permitir crecer al contenido */
+  max-width: 1500px;
   height: auto;
-  margin-top: 70px; /* CAMBIADO: Aumentado de 50px a 100px para bajar el QR y el texto */
-  gap: 100px; /* CAMBIADO: Aumentado de 80px a 100px para separar más el QR del texto */
+  margin-top: 4vh; /* CAMBIO: Uso de vh para adaptarse mejor sin importar el tamaño del título */
+  gap: 100px;
   z-index: 10;
 }
 
@@ -76,7 +83,7 @@
 
 .qr-frame-static {
   position: relative;
-  transform: scale(1.1); /* CAMBIADO: Agrandado el contenedor del QR un 10% extra */
+  transform: scale(1.1);
 }
 
 .qr-white-box {
@@ -110,19 +117,19 @@
 
 .instruction-text {
   font-family: 'Segoe UI', sans-serif;
-  font-size: 4rem; /* CAMBIADO: Aumentado de 3.5rem a 4rem */
+  font-size: 4rem;
   font-weight: 700;
   color: white;
-  line-height: 1.15; /* CAMBIADO: Aumentado ligeramente para mejor lectura del texto más grande */
+  line-height: 1.15;
   text-shadow: 0 2px 15px rgba(0,0,0,0.8);
-  max-width: 800px; /* CAMBIADO: Aumentado de 700px a 800px para evitar saltos de línea raros */
+  max-width: 800px;
 }
 
 .decoration-line {
-  width: 150px; /* CAMBIADO: Aumentado de 120px a 150px para mantener proporción con el texto grande */
-  height: 5px; /* CAMBIADO: Aumentado de 4px a 5px */
+  width: 150px;
+  height: 5px;
   background: linear-gradient(90deg, #ffeb3b, #ff9800, transparent);
-  margin-top: 30px; /* CAMBIADO: Separado un poco más del texto */
+  margin-top: 30px;
   border-radius: 2px;
   box-shadow: 0 0 15px #ffeb3b;
 }
@@ -152,24 +159,24 @@
   }
   .split-layout {
     flex-direction: column;
-    margin-top: 50px; /* CAMBIADO: Bajado también en móvil para mantener proporción */
+    margin-top: 50px;
     gap: 40px;
   }
   .qr-frame-static {
-    transform: scale(1); /* Reseteamos escala extra en móviles para que no se desborde */
+    transform: scale(1);
   }
   .right-panel {
     align-items: center;
     text-align: center;
   }
   .instruction-text {
-    font-size: 2.2rem; /* CAMBIADO: Ligeramente más grande en móvil (antes 2rem) */
+    font-size: 2.2rem;
   }
   .qr-title-bold {
-    font-size: 2.8rem;
+    font-size: 2.2rem;
   }
   .qr-title-script {
-    font-size: 3.8rem;
+    font-size: 5rem; /* CAMBIO: Ajustado el tamaño en móvil para que no rompa la vista */
   }
   .decoration-line {
     background: linear-gradient(90deg, transparent, #ffeb3b, transparent);

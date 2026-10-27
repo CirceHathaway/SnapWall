@@ -29,14 +29,32 @@ export default function QRScreen() {
 
   const formatearTitulo = (titulo) => {
     if (!titulo) return { parte1: '', parte2: '' };
-    const indiceDe = titulo.toLowerCase().lastIndexOf(" de ");
+    
+    const tituloLower = titulo.toLowerCase();
+
+    // 1. Caso " de "
+    const indiceDe = tituloLower.lastIndexOf(" de ");
     if (indiceDe !== -1) {
       return { parte1: titulo.substring(0, indiceDe + 4).trim(), parte2: titulo.substring(indiceDe + 4).trim() };
     }
+
+    // 2. NUEVO: Caso "XV"
+    // Busca "xv" como palabra independiente
+    const matchXV = tituloLower.match(/\bxv\b/);
+    if (matchXV) {
+      const corte = matchXV.index + 2; // Corta justo después de "xv"
+      return {
+        parte1: titulo.substring(0, corte).trim(),
+        parte2: titulo.substring(corte).trim()
+      };
+    }
+
+    // 3. Caso primer espacio
     const primerEspacio = titulo.indexOf(" ");
     if (primerEspacio !== -1) {
       return { parte1: titulo.substring(0, primerEspacio).trim(), parte2: titulo.substring(primerEspacio + 1).trim() };
     }
+    
     return { parte1: titulo, parte2: '' };
   };
 
